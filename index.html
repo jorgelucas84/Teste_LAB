@@ -46,15 +46,7 @@
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-mid); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-  /* API Key */
-  .apikey-bar { background: var(--orange-light); border: 1px solid #EF9F27; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .apikey-bar label { font-size: 13px; color: var(--orange-dark); font-weight: 500; white-space: nowrap; }
-  .apikey-bar input { flex: 1; min-width: 200px; font-size: 12px; padding: 6px 10px; border: 1px solid #EF9F27; border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--mono); }
-  .apikey-bar button { font-size: 12px; padding: 6px 14px; border-radius: 8px; border: none; background: var(--orange-mid); color: #fff; cursor: pointer; font-family: var(--font); }
-  .apikey-bar.saved { background: var(--green-light); border-color: var(--green-mid); }
-  .apikey-bar.saved label { color: var(--green-dark); }
-  .apikey-bar.saved input { border-color: var(--green-mid); }
-  .apikey-bar.saved button { background: var(--green-mid); }
+
 
   /* Métricas */
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
@@ -206,14 +198,7 @@
 <body>
 <div class="app">
 
-  <!-- API Key -->
-  <div class="apikey-bar" id="apibar">
-    <i class="ti ti-key" style="font-size:18px;flex-shrink:0;"></i>
-    <label>Chave API Anthropic:</label>
-    <input type="password" id="apikey-input" placeholder="sk-ant-..." autocomplete="off">
-    <button onclick="salvarChave()">Salvar</button>
-    <span id="apikey-status" style="font-size:12px;"></span>
-  </div>
+
 
   <!-- Header -->
   <div class="header">
@@ -342,20 +327,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── API Key ───────────────────────────────────────────────
-let API_KEY = localStorage.getItem('lmp_apikey') || '';
-if(API_KEY){ document.getElementById('apikey-input').value=API_KEY; marcarChaveSalva(); }
-function salvarChave(){
-  API_KEY = document.getElementById('apikey-input').value.trim();
-  localStorage.setItem('lmp_apikey', API_KEY);
-  marcarChaveSalva();
-}
-function marcarChaveSalva(){
-  document.getElementById('apikey-status').textContent='✓ chave salva';
-  const bar = document.getElementById('apibar');
-  bar.className='apikey-bar saved';
-}
-
 // ─── Orientados (persistidos no localStorage) ──────────────
 function defaultOrientados(){
   const hoje = new Date();
@@ -687,7 +658,6 @@ function showTyping(){
 async function doSend(){
   const inp = document.getElementById('chat-in');
   const text = inp.value.trim(); if(!text) return;
-  if(!API_KEY){ toast('⚠ Insira sua chave API Anthropic'); return; }
   inp.value='';
   appendMsg('user', text);
   history.push({role:'user', content:text});
@@ -696,7 +666,7 @@ async function doSend(){
   try{
     const res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01'},
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, system:buildSystem(), messages:history})
     });
     const data = await res.json();
@@ -717,4 +687,3 @@ atualizarMetricas();
 </script>
 </body>
 </html>
-
