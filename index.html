@@ -227,9 +227,9 @@ select.form-input{cursor:pointer}
   <!-- Painel: Editais -->
   <div id="panel-editais" class="panel"><div id="edital-list"></div></div>
 
-</div><!-- /app -->
+</div>
 
-<!-- Modal: Editar / Novo Orientado -->
+<!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-title"><i class="ti ti-user-edit"></i><span id="modal-title-text">Editar Orientado</span></div>
@@ -277,7 +277,6 @@ select.form-input{cursor:pointer}
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -590,6 +589,7 @@ function showTyping() {
   el.innerHTML = `<div class="avatar bot"><i class="ti ti-atom"></i></div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   box.appendChild(el); box.scrollTop = box.scrollHeight;
 }
+
 async function doSend() {
   const inp = document.getElementById('chat-in');
   const text = inp.value.trim(); if (!text) return;
@@ -602,8 +602,9 @@ async function doSend() {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
+        'Content-Type': 'application/json'
+        // Nota: NÃO incluir 'anthropic-version' nem 'x-api-key' aqui.
+        // O proxy do Claude.ai injeta autenticação automaticamente.
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
@@ -613,14 +614,14 @@ async function doSend() {
       })
     });
     const data = await res.json();
-    const reply = data.content?.map(b => b.text||'').join('') ||
-      (data.error ? 'Erro da API: ' + data.error.message : 'Não foi possível processar a resposta.');
+    const reply = data.content?.map(b => b.text||'').join('')
+      || (data.error ? 'Erro da API: ' + data.error.message : 'Não foi possível processar a resposta.');
     document.getElementById('typing')?.remove();
     appendMsg('assistant', reply, !!data.error);
     if (!data.error) history.push({ role:'assistant', content:reply });
   } catch(e) {
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', 'Não consegui me conectar ao servidor. Verifique sua conexão e tente novamente.', true);
+    appendMsg('assistant', 'Erro de conexão: ' + e.message, true);
   }
   document.getElementById('send-btn').disabled = false;
 }
