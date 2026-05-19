@@ -7,230 +7,165 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f4f3ef;
-    --surface: #ffffff;
-    --border: #e2e1da;
-    --blue-dark: #0C447C;
-    --blue-mid: #185FA5;
-    --blue-light: #E6F1FB;
-    --blue-accent: #85B7EB;
-    --green-dark: #27500A;
-    --green-mid: #3B6D11;
-    --green-light: #EAF3DE;
-    --orange-dark: #633806;
-    --orange-mid: #854F0B;
-    --orange-light: #FAEEDA;
-    --red-dark: #791F1F;
-    --red-mid: #A32D2D;
-    --red-light: #FCEBEB;
-    --text: #1a1a1a;
-    --text-muted: #777;
-    --teal-light: #E1F5EE;
-    --teal-dark: #085041;
-    --radius: 12px;
-    --font: 'IBM Plex Sans', sans-serif;
-    --mono: 'IBM Plex Mono', monospace;
-  }
-  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-  .app { max-width: 800px; margin: 0 auto; padding: 24px 16px 48px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --surface:#ffffff;--border:#e2e1da;
+  --blue-dark:#0C447C;--blue-mid:#185FA5;--blue-light:#E6F1FB;--blue-accent:#85B7EB;
+  --green-dark:#27500A;--green-mid:#3B6D11;--green-light:#EAF3DE;
+  --orange-dark:#633806;--orange-mid:#854F0B;--orange-light:#FAEEDA;
+  --red-dark:#791F1F;--red-mid:#A32D2D;--red-light:#FCEBEB;
+  --text:#1a1a1a;--text-muted:#666;
+  --teal-light:#E1F5EE;--teal-dark:#085041;
+  --bg:#f4f3ef;--r:12px;
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:800px;margin:0 auto;padding:24px 16px 48px}
 
-  /* Header */
-  .header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding: 16px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
-  .header-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--blue-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .header-icon i { font-size: 22px; color: var(--blue-dark); }
-  .header-title { font-size: 16px; font-weight: 600; color: var(--text); }
-  .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: var(--mono); }
-  .status-dot { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-mid); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:16px 20px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
+.hdr-icon{width:44px;height:44px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-icon i{font-size:22px;color:var(--blue-dark)}
+.hdr-title{font-size:16px;font-weight:600;color:var(--text)}
+.hdr-sub{font-size:11px;color:var(--text-muted);margin-top:2px;font-family:var(--mono)}
+.status-dot{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green-mid);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.metric{background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:14px 16px}
+.metric-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)}
+.metric-value{font-size:26px;font-weight:600}
+.metric-value.verde{color:var(--green-mid)}
+.metric-value.laranja{color:var(--orange-mid)}
+.metric-value.vermelho{color:var(--red-mid)}
 
+.nav{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:6px}
+.nav-btn{background:transparent;border:none;cursor:pointer;font-size:13px;padding:7px 14px;border-radius:8px;color:#666;font-family:var(--font);transition:all 0.15s;display:flex;align-items:center;gap:5px}
+.nav-btn.active{background:var(--blue-light);color:var(--blue-dark);font-weight:500}
+.nav-btn:hover:not(.active){background:var(--bg)}
+.nav-btn i{font-size:15px}
 
-  /* API Key */
-  .apikey-bar { background: var(--orange-light); border: 1px solid #EF9F27; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .apikey-bar label { font-size: 13px; color: var(--orange-dark); font-weight: 500; white-space: nowrap; }
-  .apikey-bar input { flex: 1; min-width: 200px; font-size: 12px; padding: 6px 10px; border: 1px solid #EF9F27; border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--mono); }
-  .apikey-bar button { font-size: 12px; padding: 6px 14px; border-radius: 8px; border: none; background: var(--orange-mid); color: #fff; cursor: pointer; font-family: var(--font); }
-  .apikey-bar.saved { background: var(--green-light); border-color: var(--green-mid); }
-  .apikey-bar.saved label { color: var(--green-dark); }
-  .apikey-bar.saved input { border-color: var(--green-mid); }
-  .apikey-bar.saved button { background: var(--green-mid); }
+.panel{display:none}.panel.active{display:block}
 
-  /* Metrics */
-  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
-  .metric { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; }
-  .metric-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: var(--mono); }
-  .metric-value { font-size: 26px; font-weight: 600; }
-  .metric-value.verde { color: var(--green-mid); }
-  .metric-value.laranja { color: var(--orange-mid); }
-  .metric-value.vermelho { color: var(--red-mid); }
+.chat-area{height:360px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:10px}
+.msg-row{display:flex;gap:8px;align-items:flex-start}
+.msg-row.user{flex-direction:row-reverse}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar.bot{background:var(--blue-light)}.avatar.bot i{font-size:14px;color:var(--blue-dark)}
+.avatar.user{background:var(--green-light)}.avatar.user i{font-size:14px;color:var(--green-mid)}
+.bubble{padding:10px 14px;max-width:85%;font-size:13.5px;line-height:1.7}
+.bubble.bot{background:var(--surface);border:1px solid var(--border);border-radius:0 12px 12px 12px}
+.bubble.user{background:var(--blue-light);border-radius:12px 0 12px 12px;color:#042C53}
+.bubble.error{background:var(--red-light);border:1px solid #F09595;border-radius:0 12px 12px 12px;color:var(--red-dark)}
 
-  /* Navegação */
-  .nav { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 6px; }
-  .nav-btn { background: transparent; border: none; cursor: pointer; font-size: 13px; padding: 7px 14px; border-radius: 8px; color: #666; font-family: var(--font); transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
-  .nav-btn.active { background: var(--blue-light); color: var(--blue-dark); font-weight: 500; }
-  .nav-btn:hover:not(.active) { background: var(--bg); }
-  .nav-btn i { font-size: 15px; }
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{font-size:12px;padding:5px 12px;border-radius:14px;border:1px solid var(--border);cursor:pointer;background:var(--surface);color:#555;font-family:var(--font);transition:all 0.15s;white-space:nowrap}
+.chip:hover{background:var(--blue-light);color:var(--blue-dark);border-color:var(--blue-accent)}
+.chip.active-filter{background:var(--blue-light);color:var(--blue-dark);border-color:var(--blue-accent)}
 
-  /* Painel */
-  .panel { display: none; }
-  .panel.active { display: block; }
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row textarea{flex:1;font-size:14px;resize:none;padding:9px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-family:var(--font);line-height:1.5;outline:none;transition:border-color 0.15s}
+.chat-input-row textarea:focus{border-color:var(--blue-accent)}
+.send-btn{padding:9px 18px;background:var(--blue-dark);color:var(--blue-light);border:none;border-radius:10px;cursor:pointer;font-size:15px;align-self:flex-end;transition:opacity 0.15s}
+.send-btn:hover{opacity:0.85}.send-btn:disabled{opacity:0.4;cursor:not-allowed}
 
-  /* Chat */
-  .chat-area { height: 360px; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
-  .msg-row { display: flex; gap: 8px; align-items: flex-start; }
-  .msg-row.user { flex-direction: row-reverse; }
-  .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .avatar.bot { background: var(--blue-light); }
-  .avatar.bot i { font-size: 14px; color: var(--blue-dark); }
-  .avatar.user { background: var(--green-light); }
-  .avatar.user i { font-size: 14px; color: var(--green-mid); }
-  .bubble { padding: 10px 14px; max-width: 85%; font-size: 13.5px; line-height: 1.7; }
-  .bubble.bot { background: var(--surface); border: 1px solid var(--border); border-radius: 0 12px 12px 12px; }
-  .bubble.user { background: var(--blue-light); border-radius: 12px 0 12px 12px; color: #042C53; }
+.ori-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;transition:box-shadow 0.15s}
+.ori-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.ori-card.risco-alto{border-left:3px solid #E24B4A;border-radius:0 12px 12px 0}
+.ori-card.risco-medio{border-left:3px solid #BA7517;border-radius:0 12px 12px 0}
+.ori-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.ori-avatar{width:38px;height:38px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blue-dark);flex-shrink:0;font-family:var(--mono)}
+.ori-name{font-size:14px;font-weight:600}
+.ori-tema{font-size:12px;color:var(--text-muted);margin-top:1px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-left:auto}
+.badge{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:500;white-space:nowrap;font-family:var(--mono)}
+.badge-ok{background:var(--green-light);color:var(--green-dark)}
+.badge-warn{background:var(--orange-light);color:var(--orange-dark)}
+.badge-risk{background:var(--red-light);color:var(--red-dark)}
+.badge-info{background:var(--blue-light);color:var(--blue-dark)}
+.badge-teal{background:var(--teal-light);color:var(--teal-dark)}
+.badge-gray{background:var(--bg);color:#666;border:1px solid var(--border)}
+.progress-row{display:flex;align-items:center;gap:8px}
+.progress-bar{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden}
+.progress-fill{height:5px;border-radius:3px;transition:width 0.6s ease}
+.progress-label{font-size:11px;color:var(--text-muted);white-space:nowrap;font-family:var(--mono)}
+.prazo-info{font-size:11px;color:var(--text-muted);font-family:var(--mono);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap}
+.prazo-info span{display:flex;align-items:center;gap:4px}
+.prazo-info i{font-size:12px}
+.edit-btn{font-size:11px;padding:3px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;transition:all 0.15s;margin-left:auto}
+.edit-btn:hover{background:var(--blue-light);color:var(--blue-dark);border-color:var(--blue-accent)}
 
-  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
-  .chip { font-size: 12px; padding: 5px 12px; border-radius: 14px; border: 1px solid var(--border); cursor: pointer; background: var(--surface); color: #555; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
-  .chip:hover { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
-  .chip.active-filter { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal-title i{color:var(--blue-dark)}
+.form-row{margin-bottom:14px}
+.form-label{font-size:12px;color:var(--text-muted);font-family:var(--mono);margin-bottom:5px;display:block}
+.form-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--surface);color:var(--text);outline:none;transition:border-color 0.15s}
+.form-input:focus{border-color:var(--blue-accent)}
+select.form-input{cursor:pointer}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.btn-primary{padding:8px 20px;background:var(--blue-dark);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font)}
+.btn-secondary{padding:8px 20px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font)}
+.btn-danger{padding:8px 20px;background:var(--red-light);color:var(--red-dark);border:1px solid #E24B4A;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font)}
 
-  .chat-input-row { display: flex; gap: 8px; }
-  .chat-input-row textarea { flex: 1; font-size: 14px; resize: none; padding: 9px 13px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-family: var(--font); line-height: 1.5; outline: none; transition: border-color 0.15s; }
-  .chat-input-row textarea:focus { border-color: var(--blue-accent); }
-  .send-btn { padding: 9px 18px; background: var(--blue-dark); color: var(--blue-light); border: none; border-radius: 10px; cursor: pointer; font-size: 15px; align-self: flex-end; transition: opacity 0.15s; }
-  .send-btn:hover { opacity: 0.85; }
-  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.reg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px}
+.reg-title{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:14px;font-weight:600}
+.reg-title i{font-size:17px;color:var(--blue-mid)}
+.reg-card ul{padding-left:16px;display:flex;flex-direction:column;gap:5px}
+.reg-card li{font-size:13px;color:#555;line-height:1.6}
 
-  /* Orientados */
-  .ori-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; transition: box-shadow 0.15s; }
-  .ori-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .ori-card.risco-alto { border-left: 3px solid #E24B4A; border-radius: 0 12px 12px 0; }
-  .ori-card.risco-medio { border-left: 3px solid #BA7517; border-radius: 0 12px 12px 0; }
-  .ori-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-  .ori-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--blue-dark); flex-shrink: 0; font-family: var(--mono); }
-  .ori-name { font-size: 14px; font-weight: 600; }
-  .ori-tema { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-  .badges { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; margin-left: auto; }
-  .badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 500; white-space: nowrap; font-family: var(--mono); }
-  .badge-ok { background: var(--green-light); color: var(--green-dark); }
-  .badge-warn { background: var(--orange-light); color: var(--orange-dark); }
-  .badge-risk { background: var(--red-light); color: var(--red-dark); }
-  .badge-info { background: var(--blue-light); color: var(--blue-dark); }
-  .badge-teal { background: var(--teal-light); color: var(--teal-dark); }
-  .badge-gray { background: var(--bg); color: #666; border: 1px solid var(--border); }
-  .badge-purple { background: #EEEDFE; color: #3C3489; }
-  .progress-row { display: flex; align-items: center; gap: 8px; }
-  .progress-bar { flex: 1; height: 5px; background: #eee; border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 5px; border-radius: 3px; transition: width 0.6s ease; }
-  .progress-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-family: var(--mono); }
+.list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px}
+.list-card-title{font-size:14px;font-weight:600;flex:1}
+.list-card-meta{display:flex;gap:16px;font-size:12px;color:var(--text-muted);margin-top:6px;flex-wrap:wrap;font-family:var(--mono)}
+.list-card-meta span{display:flex;align-items:center;gap:4px}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.filter-row{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.export-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--surface);color:var(--blue-dark);border:1px solid var(--blue-accent);border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500;transition:all 0.15s}
+.export-btn:hover{background:var(--blue-light)}
+.export-btn.green{background:var(--green-light);color:var(--green-dark);border-color:var(--green-mid)}
+.export-btn.green:hover{background:#d5efc0}
 
-  /* Prazo badge */
-  .prazo-info { font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 5px; display: flex; gap: 12px; flex-wrap: wrap; }
-  .prazo-info span { display: flex; align-items: center; gap: 4px; }
-  .prazo-info i { font-size: 12px; }
+.typing-dots{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--blue-accent);animation:blink 1.2s infinite;display:inline-block}
+.typing-dots span:nth-child(2){animation-delay:.4s}.typing-dots span:nth-child(3){animation-delay:.8s}
+@keyframes blink{0%,80%,100%{opacity:0.3}40%{opacity:1}}
 
-  /* Edit button */
-  .edit-btn { font-size: 11px; padding: 3px 10px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-family: var(--font); display: flex; align-items: center; gap: 4px; transition: all 0.15s; margin-left: auto; }
-  .edit-btn:hover { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
 
-  /* Modal */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border-radius: 16px; padding: 24px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .modal-title i { color: var(--blue-dark); }
-  .form-row { margin-bottom: 14px; }
-  .form-label { font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 5px; display: block; }
-  .form-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--font); background: var(--surface); color: var(--text); outline: none; transition: border-color 0.15s; }
-  .form-input:focus { border-color: var(--blue-accent); }
-  select.form-input { cursor: pointer; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
-  .btn-primary { padding: 8px 20px; background: var(--blue-dark); color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
-  .btn-secondary { padding: 8px 20px; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
-  .btn-danger { padding: 8px 20px; background: var(--red-light); color: var(--red-dark); border: 1px solid #E24B4A; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
-  .btn-add { display: flex; align-items: center; gap: 6px; padding: 9px 16px; background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green-mid); border-radius: 10px; font-size: 13px; cursor: pointer; font-family: var(--font); margin-bottom: 12px; font-weight: 500; }
-  .btn-add:hover { background: #d5efc0; }
-
-  /* Regimento */
-  .reg-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; }
-  .reg-title { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 14px; font-weight: 600; }
-  .reg-title i { font-size: 17px; color: var(--blue-mid); }
-  .reg-card ul { padding-left: 16px; display: flex; flex-direction: column; gap: 5px; }
-  .reg-card li { font-size: 13px; color: #555; line-height: 1.6; }
-
-  /* Projetos / Editais */
-  .list-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; }
-  .list-card-title { font-size: 14px; font-weight: 600; flex: 1; }
-  .list-card-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 6px; flex-wrap: wrap; font-family: var(--mono); }
-  .list-card-meta span { display: flex; align-items: center; gap: 4px; }
-  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .filter-row { display: flex; gap: 7px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-
-  /* Botão exportar */
-  .export-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--surface); color: var(--blue-dark); border: 1px solid var(--blue-accent); border-radius: 10px; font-size: 12px; cursor: pointer; font-family: var(--font); font-weight: 500; transition: all 0.15s; }
-  .export-btn:hover { background: var(--blue-light); }
-
-  /* Typing */
-  .typing-dots { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
-  .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-accent); animation: blink 1.2s infinite; display: inline-block; }
-  .typing-dots span:nth-child(2) { animation-delay: 0.4s; }
-  .typing-dots span:nth-child(3) { animation-delay: 0.8s; }
-  @keyframes blink { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
-
-  /* Print */
-  @media print {
-    body { background: white; }
-    .app { max-width: 100%; padding: 0; }
-    .header, .metrics, .nav, #panel-orientados { display: block !important; }
-    .panel { display: none; }
-    #panel-orientados { display: block !important; }
-    .apikey-bar, .nav, .filter-row, .edit-btn, .btn-add, .export-btn, #panel-chat, #panel-regimento, #panel-projetos, #panel-editais { display: none !important; }
-    .ori-card { break-inside: avoid; }
-  }
-
-  @media (max-width: 600px) {
-    .metrics { grid-template-columns: repeat(2, 1fr); }
-    .bubble { max-width: 95%; }
-    .form-grid { grid-template-columns: 1fr; }
-  }
-
-  /* Notificação toast */
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; z-index: 9999; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .section-label { font-size: 13px; font-weight: 600; color: var(--text-muted); font-family: var(--mono); }
+@media(max-width:600px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .bubble{max-width:95%}
+  .form-grid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .app{max-width:100%;padding:0}
+  .panel{display:none}
+  #panel-orientados{display:block!important}
+  .nav,.filter-row,.edit-btn,.export-btn,#panel-chat,#panel-regimento,#panel-projetos,#panel-editais{display:none!important}
+  .ori-card{break-inside:avoid}
+}
 </style>
 </head>
 <body>
 <div class="app">
 
-
-
-  <!-- API Key -->
-  <div class="apikey-bar" id="apibar">
-    <i class="ti ti-key" style="font-size:18px;flex-shrink:0;color:#854F0B;"></i>
-    <label>Chave API Anthropic:</label>
-    <input type="password" id="apikey-input" placeholder="sk-ant-..." autocomplete="off">
-    <button onclick="salvarChave()">Salvar</button>
-    <span id="apikey-status" style="font-size:12px;"></span>
-  </div>
-
   <!-- Header -->
   <div class="header">
-    <div class="header-icon"><i class="ti ti-atom"></i></div>
+    <div class="hdr-icon"><i class="ti ti-atom"></i></div>
     <div>
-      <div class="header-title">Agente Científico LMP / INCT — UFC</div>
-      <div class="header-sub">Regimento PETRAN · <span id="hdr-count">10</span> orientados · DEHA + PETRAN</div>
+      <div class="hdr-title">Agente Científico LMP / INCT — UFC</div>
+      <div class="hdr-sub">Regimento PETRAN · <span id="hdr-count">10</span> orientados · DEHA + PETRAN</div>
     </div>
     <div class="status-dot"><div class="dot"></div> ativo</div>
   </div>
 
   <!-- Métricas -->
-  <div class="metrics" id="metrics-grid">
+  <div class="metrics">
     <div class="metric"><div class="metric-label">Total orientados</div><div class="metric-value" id="m-total">10</div></div>
     <div class="metric"><div class="metric-label">No prazo</div><div class="metric-value verde" id="m-ok">6</div></div>
     <div class="metric"><div class="metric-label">Atenção</div><div class="metric-value laranja" id="m-med">3</div></div>
@@ -251,11 +186,11 @@
     <div class="chat-area" id="chat-msgs">
       <div class="msg-row">
         <div class="avatar bot"><i class="ti ti-atom"></i></div>
-        <div class="bubble bot">Olá! Sou o agente científico do LMP/INCT. Conheço seus orientados reais e o <strong>Regimento Oficial do PETRAN</strong> com todos os prazos. Posso calcular prazos reais a partir das datas de ingresso. Como posso ajudar?</div>
+        <div class="bubble bot">Olá! Sou o agente científico do LMP/INCT. Conheço seus orientados e o <strong>Regimento Oficial do PETRAN</strong> com todos os prazos. Posso calcular prazos reais a partir das datas de ingresso, analisar riscos e sugerir ações estratégicas. Como posso ajudar?</div>
       </div>
     </div>
     <div class="chips">
-      <button class="chip" onclick="sendCmd('Analise o risco de atraso de cada doutorando do PETRAN com base no regimento oficial')">Risco real por regimento ↗</button>
+      <button class="chip" onclick="sendCmd('Analise o risco de atraso de cada doutorando com base no regimento oficial')">Risco real por regimento ↗</button>
       <button class="chip" onclick="sendCmd('Quem ainda precisa fazer a qualificação e qual é o prazo limite de cada um?')">Status qualificações ↗</button>
       <button class="chip" onclick="sendCmd('Quais são os requisitos de publicação para cada doutorando agendar a defesa?')">Requisitos de defesa ↗</button>
       <button class="chip" onclick="sendCmd('Monte um cronograma ideal de defesa para cada doutorando do grupo')">Cronogramas de defesa ↗</button>
@@ -277,8 +212,8 @@
         <button class="chip" onclick="filtrar('DEHA',this)">DEHA</button>
         <button class="chip" onclick="filtrar('risco',this)">Em risco</button>
       </div>
-      <button class="export-btn" onclick="exportarRelatorio()"><i class="ti ti-printer"></i> Exportar relatório</button>
-      <button class="export-btn" onclick="abrirModalNovo()" style="background:var(--green-light);color:var(--green-dark);border-color:var(--green-mid);"><i class="ti ti-user-plus"></i> Novo orientado</button>
+      <button class="export-btn" onclick="exportarRelatorio()"><i class="ti ti-printer"></i> Exportar</button>
+      <button class="export-btn green" onclick="abrirModalNovo()"><i class="ti ti-user-plus"></i> Novo</button>
     </div>
     <div id="ori-list"></div>
   </div>
@@ -292,14 +227,14 @@
   <!-- Painel: Editais -->
   <div id="panel-editais" class="panel"><div id="edital-list"></div></div>
 
-</div>
+</div><!-- /app -->
 
 <!-- Modal: Editar / Novo Orientado -->
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-title"><i class="ti ti-user-edit"></i><span id="modal-title-text">Editar Orientado</span></div>
     <div class="form-row"><label class="form-label">Nome completo</label><input class="form-input" id="f-nome" type="text" placeholder="Nome do orientando"></div>
-    <div class="form-row"><label class="form-label">Tema / Título do trabalho</label><input class="form-input" id="f-tema" type="text" placeholder="Tema da pesquisa"></div>
+    <div class="form-row"><label class="form-label">Tema / título do trabalho</label><input class="form-input" id="f-tema" type="text" placeholder="Tema da pesquisa"></div>
     <div class="form-grid">
       <div class="form-row"><label class="form-label">Nível</label>
         <select class="form-input" id="f-nivel">
@@ -328,8 +263,8 @@
     </div>
     <div class="form-row"><label class="form-label">Status de qualificação</label>
       <select class="form-input" id="f-qualif">
-        <option value="ok">Concluída / Dentro do prazo</option>
-        <option value="pendente">Pendente (ainda dentro do prazo)</option>
+        <option value="ok">Concluída / dentro do prazo</option>
+        <option value="pendente">Pendente (dentro do prazo)</option>
         <option value="devida">Devida (prazo próximo)</option>
         <option value="atrasada">Atrasada (prazo extrapolado)</option>
       </select>
@@ -346,27 +281,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── API Key ───────────────────────────────────────────────
-let API_KEY = localStorage.getItem('lmp_apikey') || '';
-if(API_KEY){ document.getElementById('apikey-input').value=API_KEY; marcarChaveSalva(); }
-function salvarChave(){
-  API_KEY = document.getElementById('apikey-input').value.trim();
-  localStorage.setItem('lmp_apikey', API_KEY);
-  marcarChaveSalva();
-}
-function marcarChaveSalva(){
-  document.getElementById('apikey-status').textContent='✓ chave salva';
-  document.getElementById('apibar').className='apikey-bar saved';
-}
-
-// ─── Orientados (persistidos no localStorage) ──────────────
-const DATA_VERSION = 'v4'; // incrementar aqui força reset com dados novos
-if(localStorage.getItem('lmp_data_version') !== DATA_VERSION){
+// ─── Dados ─────────────────────────────────────────────────
+const DATA_VERSION = 'v4';
+if (localStorage.getItem('lmp_data_version') !== DATA_VERSION) {
   localStorage.removeItem('lmp_orientados');
   localStorage.setItem('lmp_data_version', DATA_VERSION);
 }
 
-function defaultOrientados(){
+function defaultOrientados() {
   return [
     { id:1,  nome:'Haikel Buganem Busgaib Gonçalves', nivel:'Doutorado', programa:'PETRAN', ingresso:'2023-07-01', total:60, qualif:'devida',   tema:'Road Public Works Management System Using Low-Cost Technologies and Artificial Intelligence' },
     { id:2,  nome:'Natasha Porto Alexandre',           nivel:'Doutorado', programa:'PETRAN', ingresso:'2024-11-01', total:60, qualif:'ok',        tema:'Avaliação da Incorporação de Materiais de Mudança de Fase Microencapsulados em Pavimentos Asfálticos' },
@@ -375,84 +297,72 @@ function defaultOrientados(){
     { id:5,  nome:'Eulália Romão Barbosa',             nivel:'Doutorado', programa:'PETRAN', ingresso:'2025-04-01', total:60, qualif:'ok',        tema:'Avaliação multiescala da mobilização do ligante em misturas asfálticas submetidas a múltiplos ciclos de reciclagem' },
     { id:6,  nome:'Mauro José da Silva Filho',         nivel:'Doutorado', programa:'PETRAN', ingresso:'2024-11-01', total:60, qualif:'ok',        tema:'Desenvolvimento, validação e proposição de protocolos padronizados para ensaio de Ressonância por Impacto para mistura asfáltica' },
     { id:7,  nome:'Otávio José de Freitas Gomes',      nivel:'Doutorado', programa:'PETRAN', ingresso:'2024-03-01', total:60, qualif:'pendente',  tema:'Desenvolvimento de técnicas de caracterização visual de materiais utilizados na pavimentação com base em ciência de dados e processamento de imagens' },
-    { id:8,  nome:'Arthur Veras Moreira',              nivel:'Graduação', programa:'DET',      ingresso:'2023-03-01', total:60, qualif:null,        tema:'Integração de ACV e ACCV no Dimensionamento Mecanístico-Empírico de Pavimentos Asfálticos: Otimização de Recursos e Pegada de Carbono do CAP' },
+    { id:8,  nome:'Arthur Veras Moreira',              nivel:'Graduação', programa:'DET',    ingresso:'2023-03-01', total:60, qualif:null,         tema:'Integração de ACV e ACCV no Dimensionamento Mecanístico-Empírico de Pavimentos Asfálticos: Otimização de Recursos e Pegada de Carbono do CAP' },
     { id:9,  nome:'Camila Carvalho Noberto',           nivel:'Doutorado', programa:'DEHA',   ingresso:'2024-03-01', total:60, qualif:'pendente',  tema:'Avaliação do Ciclo de Vida de Pavimentos Rodoviários com Incorporação de Resíduos de Perfuração de Poços de Petróleo em Urucu' },
     { id:10, nome:'Aislan Nogueira Dutra',             nivel:'Mestrado',  programa:'PETRAN', ingresso:'2025-04-01', total:30, qualif:'ok',        tema:'Desenvolvimento de modelo de previsão do perfil de temperatura de pavimentos asfálticos' },
   ];
 }
 
 let orientados = JSON.parse(localStorage.getItem('lmp_orientados') || 'null') || defaultOrientados();
-let nextId = Math.max(...orientados.map(o=>o.id), 0) + 1;
+let nextId = Math.max(...orientados.map(o => o.id), 0) + 1;
+function salvarLocal() { localStorage.setItem('lmp_orientados', JSON.stringify(orientados)); }
 
-function salvarLocal(){ localStorage.setItem('lmp_orientados', JSON.stringify(orientados)); }
-
-// ─── Calcular meses cursados a partir da data de ingresso ──
-function calcMeses(ingresso){
-  if(!ingresso) return 0;
-  const ini = new Date(ingresso);
-  const hoje = new Date();
-  return Math.max(0, Math.round((hoje - ini) / (1000*60*60*24*30.44)));
+// ─── Cálculos ──────────────────────────────────────────────
+function calcMeses(ing) {
+  if (!ing) return 0;
+  const ini = new Date(ing), hoje = new Date();
+  return Math.max(0, Math.round((hoje - ini) / (1000 * 60 * 60 * 24 * 30.44)));
 }
-
-function calcRisco(o){
-  const m = calcMeses(o.ingresso);
-  const total = o.total;
-  const pct = m / total;
-  if(o.qualif === 'atrasada') return 'alto';
-  if(pct >= 0.75) return 'alto';
-  if(pct >= 0.55 || o.qualif === 'devida') return 'medio';
+function calcRisco(o) {
+  const m = calcMeses(o.ingresso), pct = m / o.total;
+  if (o.qualif === 'atrasada' || pct >= 0.75) return 'alto';
+  if (pct >= 0.55 || o.qualif === 'devida') return 'medio';
   return 'baixo';
 }
-
-function dataDefesaPrazo(ingresso, total){
-  if(!ingresso) return '—';
-  const d = new Date(ingresso);
-  d.setMonth(d.getMonth() + total);
-  return d.toLocaleDateString('pt-BR', {month:'short', year:'numeric'});
+function dataDefesaPrazo(ing, total) {
+  if (!ing) return '—';
+  const d = new Date(ing); d.setMonth(d.getMonth() + total);
+  return d.toLocaleDateString('pt-BR', { month:'short', year:'numeric' });
 }
-
-function dataQualifPrazo(ingresso, nivel){
-  if(!ingresso) return '—';
-  const d = new Date(ingresso);
-  const meses = nivel === 'Mestrado' ? 21 : 33;
-  d.setMonth(d.getMonth() + meses);
-  return d.toLocaleDateString('pt-BR', {month:'short', year:'numeric'});
+function dataQualifPrazo(ing, nivel) {
+  if (!ing) return '—';
+  const d = new Date(ing); d.setMonth(d.getMonth() + (nivel === 'Mestrado' ? 21 : 33));
+  return d.toLocaleDateString('pt-BR', { month:'short', year:'numeric' });
 }
 
 // ─── Utilitários ───────────────────────────────────────────
-function ini(n){ return n.split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''); }
-function rBadge(r){ return r==='alto'?'<span class="badge badge-risk">alto risco</span>':r==='medio'?'<span class="badge badge-warn">atenção</span>':'<span class="badge badge-ok">no prazo</span>'; }
-function rColor(r){ return r==='alto'?'#E24B4A':r==='medio'?'#BA7517':'#639922'; }
-function pBadge(p){ return p==='PETRAN'?'<span class="badge badge-info">PETRAN</span>':p==='DEHA'?'<span class="badge badge-teal">DEHA</span>':'<span class="badge badge-gray">—</span>'; }
-function qBadge(q){ if(!q||q==='ok') return ''; if(q==='atrasada') return '<span class="badge badge-risk">qualif. atrasada</span>'; if(q==='devida') return '<span class="badge badge-warn">qualif. devida</span>'; return '<span class="badge badge-gray">qualif. pendente</span>'; }
+function ini(n) { return n.split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''); }
+function rBadge(r) { return r==='alto'?'<span class="badge badge-risk">alto risco</span>':r==='medio'?'<span class="badge badge-warn">atenção</span>':'<span class="badge badge-ok">no prazo</span>'; }
+function rColor(r) { return r==='alto'?'#E24B4A':r==='medio'?'#BA7517':'#639922'; }
+function pBadge(p) { return p==='PETRAN'?'<span class="badge badge-info">PETRAN</span>':p==='DEHA'?'<span class="badge badge-teal">DEHA</span>':'<span class="badge badge-gray">'+p+'</span>'; }
+function qBadge(q) { if(!q||q==='ok')return''; if(q==='atrasada')return'<span class="badge badge-risk">qualif. atrasada</span>'; if(q==='devida')return'<span class="badge badge-warn">qualif. devida</span>'; return'<span class="badge badge-gray">qualif. pendente</span>'; }
 
-function atualizarMetricas(){
-  const lista = orientados.map(o=>({...o, _risco: calcRisco(o)}));
+function atualizarMetricas() {
+  const lista = orientados.map(o => ({ ...o, _risco: calcRisco(o) }));
   document.getElementById('m-total').textContent = orientados.length;
-  document.getElementById('m-ok').textContent = lista.filter(o=>o._risco==='baixo').length;
-  document.getElementById('m-med').textContent = lista.filter(o=>o._risco==='medio').length;
-  document.getElementById('m-alto').textContent = lista.filter(o=>o._risco==='alto').length;
+  document.getElementById('m-ok').textContent    = lista.filter(o=>o._risco==='baixo').length;
+  document.getElementById('m-med').textContent   = lista.filter(o=>o._risco==='medio').length;
+  document.getElementById('m-alto').textContent  = lista.filter(o=>o._risco==='alto').length;
   document.getElementById('hdr-count').textContent = orientados.length;
 }
 
 // ─── Render Orientados ─────────────────────────────────────
 let filtroAtivo = 'todos';
-function filtrar(f, btn){
+function filtrar(f, btn) {
   filtroAtivo = f;
-  document.querySelectorAll('.filter-row .chip').forEach(b=>b.classList.remove('active-filter'));
+  document.querySelectorAll('.filter-row .chip').forEach(b => b.classList.remove('active-filter'));
   btn.classList.add('active-filter');
   renderOrientados();
 }
-
-function renderOrientados(){
+function renderOrientados() {
   atualizarMetricas();
-  let lista = orientados.map(o=>({...o, _meses: calcMeses(o.ingresso), _risco: calcRisco(o)}));
-  if(filtroAtivo==='PETRAN') lista = lista.filter(o=>o.programa==='PETRAN');
-  else if(filtroAtivo==='DEHA') lista = lista.filter(o=>o.programa==='DEHA');
-  else if(filtroAtivo==='risco') lista = lista.filter(o=>o._risco==='alto'||o._risco==='medio');
-  const nivelOrder = {'Graduação':0,'Mestrado':1,'Doutorado':2};
-  lista.sort((a,b)=> nivelOrder[a.nivel] - nivelOrder[b.nivel] || new Date(a.ingresso) - new Date(b.ingresso));
-  document.getElementById('ori-list').innerHTML = lista.map(o=>{
+  let lista = orientados.map(o => ({ ...o, _meses: calcMeses(o.ingresso), _risco: calcRisco(o) }));
+  if (filtroAtivo==='PETRAN') lista = lista.filter(o=>o.programa==='PETRAN');
+  else if (filtroAtivo==='DEHA') lista = lista.filter(o=>o.programa==='DEHA');
+  else if (filtroAtivo==='risco') lista = lista.filter(o=>o._risco==='alto'||o._risco==='medio');
+  const nO = {'Graduação':0,'Mestrado':1,'Doutorado':2};
+  lista.sort((a,b) => nO[a.nivel]-nO[b.nivel] || new Date(a.ingresso)-new Date(b.ingresso));
+  document.getElementById('ori-list').innerHTML = lista.map(o => {
     const pct = Math.min(100, Math.round((o._meses/o.total)*100));
     const restantes = Math.max(0, o.total - o._meses);
     const defPrazo = dataDefesaPrazo(o.ingresso, o.total);
@@ -465,7 +375,7 @@ function renderOrientados(){
           <div class="ori-tema">${o.tema}</div>
         </div>
         <div class="badges">${pBadge(o.programa)} ${rBadge(o._risco)} ${qBadge(o.qualif)}</div>
-        <button class="edit-btn" onclick="abrirModalEditar(${o.id})"><i class="ti ti-pencil" style="font-size:12px;"></i> editar</button>
+        <button class="edit-btn" onclick="abrirModalEditar(${o.id})"><i class="ti ti-pencil" style="font-size:11px"></i> editar</button>
       </div>
       <div class="progress-row">
         <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${rColor(o._risco)};"></div></div>
@@ -482,13 +392,13 @@ function renderOrientados(){
 
 // ─── Modal ─────────────────────────────────────────────────
 let editandoId = null;
-function abrirModalEditar(id){
+function abrirModalEditar(id) {
   editandoId = id;
-  const o = orientados.find(x=>x.id===id);
+  const o = orientados.find(x => x.id === id);
   document.getElementById('modal-title-text').textContent = 'Editar Orientado';
   document.getElementById('f-nome').value = o.nome;
   document.getElementById('f-tema').value = o.tema;
-  document.getElementById('f-nivel').value = o.nivel === 'Graduação' ? 'Graduação' : o.nivel;
+  document.getElementById('f-nivel').value = o.nivel;
   document.getElementById('f-programa').value = o.programa;
   document.getElementById('f-ingresso').value = o.ingresso || '';
   document.getElementById('f-total').value = o.total;
@@ -496,7 +406,7 @@ function abrirModalEditar(id){
   document.getElementById('btn-deletar').style.display = '';
   document.getElementById('modal-overlay').classList.add('open');
 }
-function abrirModalNovo(){
+function abrirModalNovo() {
   editandoId = null;
   document.getElementById('modal-title-text').textContent = 'Novo Orientado';
   document.getElementById('f-nome').value = '';
@@ -509,9 +419,11 @@ function abrirModalNovo(){
   document.getElementById('btn-deletar').style.display = 'none';
   document.getElementById('modal-overlay').classList.add('open');
 }
-function fecharModal(e){ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open'); }
-
-function salvarOrientado(){
+function fecharModal(e) {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+function salvarOrientado() {
   const dados = {
     nome: document.getElementById('f-nome').value.trim(),
     tema: document.getElementById('f-tema').value.trim(),
@@ -521,42 +433,33 @@ function salvarOrientado(){
     total: parseInt(document.getElementById('f-total').value),
     qualif: document.getElementById('f-qualif').value,
   };
-  if(!dados.nome){ toast('Preencha o nome do orientando'); return; }
-  if(editandoId){
-    const idx = orientados.findIndex(o=>o.id===editandoId);
-    orientados[idx] = {...orientados[idx], ...dados};
+  if (!dados.nome) { toast('Preencha o nome do orientando'); return; }
+  if (editandoId) {
+    const idx = orientados.findIndex(o => o.id === editandoId);
+    orientados[idx] = { ...orientados[idx], ...dados };
   } else {
-    orientados.push({id: nextId++, ...dados, risco:'baixo'});
+    orientados.push({ id: nextId++, ...dados });
   }
-  salvarLocal();
-  renderOrientados();
+  salvarLocal(); renderOrientados();
   document.getElementById('modal-overlay').classList.remove('open');
   toast(editandoId ? '✓ Orientado atualizado' : '✓ Orientado adicionado');
 }
-function deletarOrientado(){
-  if(!confirm('Remover este orientando?')) return;
-  orientados = orientados.filter(o=>o.id!==editandoId);
-  salvarLocal();
-  renderOrientados();
+function deletarOrientado() {
+  if (!confirm('Remover este orientando?')) return;
+  orientados = orientados.filter(o => o.id !== editandoId);
+  salvarLocal(); renderOrientados();
   document.getElementById('modal-overlay').classList.remove('open');
   toast('Orientado removido');
 }
-
-// ─── Exportar relatório ────────────────────────────────────
-function exportarRelatorio(){
-  // Mostrar painel de orientados e acionar print
+function exportarRelatorio() {
   showTab('orientados', document.querySelectorAll('.nav-btn')[1]);
-  filtroAtivo = 'todos';
-  renderOrientados();
-  setTimeout(()=>{ window.print(); }, 300);
+  filtroAtivo = 'todos'; renderOrientados();
+  setTimeout(() => window.print(), 300);
 }
-
-// ─── Toast ─────────────────────────────────────────────────
-function toast(msg){
+function toast(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 2800);
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
 }
 
 // ─── Regimento ─────────────────────────────────────────────
@@ -568,8 +471,8 @@ const regimento = [
   { titulo:'Limite de orientações (Art. 22)', icone:'ti-users', itens:['Máximo 8 alunos simultâneos em todos os programas','Máximo 4 alunos de doutorado'] },
   { titulo:'Desligamento (Art. 30)', icone:'ti-alert-triangle', itens:['Reprovação 2x na mesma disciplina','Reprovação 1x em duas disciplinas distintas','Reprovação na defesa da tese','Extrapolação do prazo máximo','Nenhuma matrícula no semestre vigente'] },
 ];
-function renderRegimento(){
-  document.getElementById('reg-content').innerHTML = regimento.map(s=>`
+function renderRegimento() {
+  document.getElementById('reg-content').innerHTML = regimento.map(s => `
     <div class="reg-card">
       <div class="reg-title"><i class="ti ${s.icone}"></i>${s.titulo}</div>
       <ul>${s.itens.map(i=>`<li>${i}</li>`).join('')}</ul>
@@ -582,8 +485,8 @@ const projetos = [
   { nome:'Materiais sustentáveis para infraestrutura urbana', financiador:'CNPq', valor:'R$ 240k', restante:'22 meses', comp:['Materiais reciclados','Gestão ambiental'] },
   { nome:'Monitoramento de estruturas de transporte — INCT', financiador:'INCT/MCTI', valor:'R$ 600k', restante:'30 meses', comp:['NDT','Caracterização','Modelagem FEA'] },
 ];
-function renderProjetos(){
-  document.getElementById('proj-list').innerHTML = projetos.map(p=>`
+function renderProjetos() {
+  document.getElementById('proj-list').innerHTML = projetos.map(p => `
     <div class="list-card">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <i class="ti ti-briefcase" style="font-size:16px;color:#888;"></i>
@@ -591,8 +494,8 @@ function renderProjetos(){
         <span class="badge badge-ok">${p.financiador}</span>
       </div>
       <div class="list-card-meta">
-        <span><i class="ti ti-coin" style="font-size:13px;"></i>${p.valor}</span>
-        <span><i class="ti ti-clock" style="font-size:13px;"></i>${p.restante}</span>
+        <span><i class="ti ti-coin"></i>${p.valor}</span>
+        <span><i class="ti ti-clock"></i>${p.restante}</span>
       </div>
       <div class="tag-row">${p.comp.map(c=>`<span class="badge badge-info">${c}</span>`).join('')}</div>
     </div>`).join('');
@@ -606,8 +509,8 @@ const editais = [
   { titulo:'FINEP Inova Infraestrutura', prazo:'31 Ago 2025', valor:'Até R$ 2M', area:'Infraestrutura / Transportes', status:'aberto' },
   { titulo:'ANP-PRH — Bolsas pós-graduação em energia', prazo:'20 Jun 2025', valor:'Bolsas mestrado/doutorado', area:'Energia / Materiais', status:'aberto' },
 ];
-function renderEditais(){
-  document.getElementById('edital-list').innerHTML = editais.map(e=>`
+function renderEditais() {
+  document.getElementById('edital-list').innerHTML = editais.map(e => `
     <div class="list-card">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <i class="ti ti-bell" style="font-size:16px;color:${e.status==='urgente'?'#A32D2D':'#888'};"></i>
@@ -615,32 +518,32 @@ function renderEditais(){
         <span class="badge ${e.status==='urgente'?'badge-risk':'badge-ok'}">${e.status}</span>
       </div>
       <div class="list-card-meta">
-        <span><i class="ti ti-calendar" style="font-size:13px;"></i>${e.prazo}</span>
-        <span><i class="ti ti-coin" style="font-size:13px;"></i>${e.valor}</span>
+        <span><i class="ti ti-calendar"></i>${e.prazo}</span>
+        <span><i class="ti ti-coin"></i>${e.valor}</span>
         <span>${e.area}</span>
       </div>
     </div>`).join('');
 }
 
 // ─── Navegação ─────────────────────────────────────────────
-function showTab(id, btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   btn.classList.add('active');
-  if(id==='orientados') renderOrientados();
-  if(id==='regimento') renderRegimento();
-  if(id==='projetos') renderProjetos();
-  if(id==='editais') renderEditais();
+  if (id==='orientados') renderOrientados();
+  if (id==='regimento')  renderRegimento();
+  if (id==='projetos')   renderProjetos();
+  if (id==='editais')    renderEditais();
 }
 
 // ─── System Prompt ─────────────────────────────────────────
-function buildSystem(){
-  const lista = orientados.map(o=>{
+function buildSystem() {
+  const lista = orientados.map(o => {
     const m = calcMeses(o.ingresso);
     return `- ${o.nome} | ${o.nivel} ${o.programa} | ${m}/${o.total} meses | Ingresso: ${o.ingresso||'?'} | Risco: ${calcRisco(o)} | Qualif: ${o.qualif||'?'} | Tema: ${o.tema}`;
   }).join('\n');
-  return `Você é o agente científico do Laboratório de Materiais e Processos (LMP) e INCT da UFC.
+  return `Você é o agente científico do Laboratório de Materiais e Processos (LMP) e INCT da UFC. Tom: profissional, direto e motivador — reconheça conquistas e aponte caminhos positivos.
 
 ═══ REGIMENTO OFICIAL DO PETRAN/UFC ═══
 DOUTORADO: Duração máxima 60 meses (+6 prorrogação). Créditos mínimos: 68. Qualificação até 33 meses. Defesa exige artigo publicado/aceito Qualis B2 ou superior.
@@ -661,60 +564,67 @@ ${lista}
 6. Recomendar editais (CNPq, CAPES, FINEP, ANP, FUNCAP)
 7. Preparar drafts de texto científico
 
-Responda em português. Seja analítico, direto e cite artigos quando relevante. Máximo 500 palavras.`;
+Responda sempre em português. Seja analítico, direto e cite artigos quando relevante. Máximo 500 palavras. Use marcadores com • quando listar itens.`;
 }
 
 // ─── Chat ──────────────────────────────────────────────────
 let history = [];
-function appendMsg(role, text){
+function appendMsg(role, text, isError) {
   const box = document.getElementById('chat-msgs');
-  const isBot = role==='assistant';
+  const isBot = role === 'assistant';
   const row = document.createElement('div');
-  row.className = 'msg-row' + (isBot?'':' user');
+  row.className = 'msg-row' + (isBot ? '' : ' user');
   const av = document.createElement('div');
-  av.className = 'avatar ' + (isBot?'bot':'user');
-  av.innerHTML = isBot?'<i class="ti ti-atom"></i>':'<i class="ti ti-user"></i>';
+  av.className = 'avatar ' + (isBot ? 'bot' : 'user');
+  av.innerHTML = isBot ? '<i class="ti ti-atom"></i>' : '<i class="ti ti-user"></i>';
   const b = document.createElement('div');
-  b.className = 'bubble ' + (isBot?'bot':'user');
-  b.innerHTML = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)/gm,'• $1');
+  b.className = 'bubble ' + (isError ? 'error' : isBot ? 'bot' : 'user');
+  b.innerHTML = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
   row.appendChild(av); row.appendChild(b);
-  box.appendChild(row);
-  box.scrollTop = box.scrollHeight;
+  box.appendChild(row); box.scrollTop = box.scrollHeight;
 }
-function showTyping(){
+function showTyping() {
   const box = document.getElementById('chat-msgs');
   const el = document.createElement('div');
-  el.id='typing'; el.className='msg-row';
-  el.innerHTML=`<div class="avatar bot"><i class="ti ti-atom"></i></div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  box.appendChild(el); box.scrollTop=box.scrollHeight;
+  el.id = 'typing'; el.className = 'msg-row';
+  el.innerHTML = `<div class="avatar bot"><i class="ti ti-atom"></i></div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(el); box.scrollTop = box.scrollHeight;
 }
-async function doSend(){
+async function doSend() {
   const inp = document.getElementById('chat-in');
-  const text = inp.value.trim(); if(!text) return;
-  if(!API_KEY){ toast('⚠ Insira sua chave API Anthropic'); return; }
-  inp.value='';
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
   appendMsg('user', text);
-  history.push({role:'user', content:text});
+  history.push({ role:'user', content:text });
   showTyping();
-  document.getElementById('send-btn').disabled=true;
-  try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, system:buildSystem(), messages:history})
+  document.getElementById('send-btn').disabled = true;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystem(),
+        messages: history
+      })
     });
     const data = await res.json();
-    const reply = data.content?.map(b=>b.text||'').join('') || (data.error ? 'Erro: '+data.error.message : 'Erro ao processar.');
+    const reply = data.content?.map(b => b.text||'').join('') ||
+      (data.error ? 'Erro da API: ' + data.error.message : 'Não foi possível processar a resposta.');
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', reply);
-    history.push({role:'assistant', content:reply});
-  } catch(e){
+    appendMsg('assistant', reply, !!data.error);
+    if (!data.error) history.push({ role:'assistant', content:reply });
+  } catch(e) {
     document.getElementById('typing')?.remove();
-    appendMsg('assistant','Erro de conexão. Verifique sua chave API e tente novamente.');
+    appendMsg('assistant', 'Não consegui me conectar ao servidor. Verifique sua conexão e tente novamente.', true);
   }
-  document.getElementById('send-btn').disabled=false;
+  document.getElementById('send-btn').disabled = false;
 }
-function sendCmd(t){ document.getElementById('chat-in').value=t; doSend(); }
+function sendCmd(t) { document.getElementById('chat-in').value = t; doSend(); }
 
 // ─── Init ──────────────────────────────────────────────────
 atualizarMetricas();
