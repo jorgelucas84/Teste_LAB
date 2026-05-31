@@ -1,0 +1,1281 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Agendamento | Lab Misturas Asfálticas</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"> 
+    <style> 
+        /* --- ESTILOS DO CABEÇALHO --- */
+        .header-main {
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
+            padding: 16px 0; color: white; border-bottom: 4px solid #143a46;
+            position: relative; overflow: hidden;
+        }
+        .header-bg-overlay {
+            position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+            background: url('img/pavimento.jpg') no-repeat center right;
+            background-size: cover; opacity: 0.15; pointer-events: none; z-index: 0;
+        }
+        .header-container {
+            display: flex; align-items: center; justify-content: center; gap: 50px;
+            max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;
+        }
+        .header-logo { width: 221px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); }
+        .header-title { margin: 0; font-size: 2.7rem; font-weight: 900; line-height: 1.2; text-shadow: 0 4px 12px rgba(0,0,0,0.3); letter-spacing: -1px; }
+        .header-subtitle { margin: 5px 0 10px; font-size: 1.5rem; font-weight: 600; color: #FFD27D; }
+        
+        .coord-info {
+            font-size: 0.85rem; font-family: 'Inter', sans-serif; font-weight: 300;
+            margin-bottom: 15px; line-height: 1.4; border-left: 3px solid #D35400;
+            padding: 5px 15px; background: rgba(0,0,0,0.1);
+        }
+        .coord-info a { color: #fff; text-decoration: underline; }
+        
+        .footer-tag {
+            font-size: 0.8rem; font-weight: 300; color: rgba(255, 255, 255, 0.8);
+            background: rgba(0,0,0,0.25); padding: 4px 15px; border-radius: 50px;
+            display: inline-block; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- ESTILOS DO CONTEÚDO --- */
+        #selecao-inicial {display: flex;justify-content: center;gap: 30px;padding: 50px 20px;flex-wrap: wrap;max-width: 1100px;margin: 0 auto;}
+        .categoria-card {background: #fff;border: 3px solid #eee;border-radius: 20px;width: 300px;padding: 40px 20px;text-align: center;cursor: pointer;transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+        .categoria-card:hover {transform: translateY(-10px);border-color: #D35400;box-shadow: 0 15px 30px rgba(211, 84, 0, 0.2);}
+        .categoria-card .icon-grande {font-size: 50px;margin-bottom: 20px;display: block;}
+        .categoria-card h3 {color: #1A4A5A;font-weight: 900;font-size: 1.2rem;text-transform: uppercase;margin: 0;}
+        #conteudo-principal {display: none;animation: fadeIn 0.6s ease-out;}
+        
+        .btn-voltar {
+            background: linear-gradient(135deg, #f5f7f8 0%, #dce4e7 100%);
+            border: 2px solid #1A4A5A;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #1A4A5A;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-voltar:hover { 
+            background: linear-gradient(135deg, #dce4e7 0%, #c8d2d6 100%);
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .cards-container {display: grid;grid-template-columns: repeat(5, 1fr);gap: 12px;margin-bottom: 25px;width: 100%;}
+        .modo-lista-aulas {display: none;flex-direction: column;gap: 0px;background: #fff;padding: 20px;border-radius: 12px;border: 1px solid #eee;text-align: left;margin-bottom: 25px;}
+        .item-aula-checkbox {display: flex;align-items: center;justify-content: flex-start;padding: 12px;border-bottom: 1px solid #f5f5f5;cursor: pointer;transition: background 0.2s;width: 100%;text-align: left;}
+        .item-aula-checkbox:hover { background: #f9f9f9; }
+        .item-aula-checkbox input {margin: 0 15px 0 0;width: 20px;height: 20px;cursor: pointer;flex-shrink: 0;}
+        
+        .ensaio-card {background: #fff;border: 2px solid #eee;border-radius: 12px;overflow: hidden;cursor: pointer;transition: all 0.3s ease;text-align: center;display: flex;flex-direction: column;min-height: 190px;position: relative;}
+        .ensaio-card:hover {transform: translateY(-5px);box-shadow: 0 10px 20px rgba(0,0,0,0.1);border-color: #D35400;}
+        .ensaio-card.selected {border-color: #1A4A5A;background-color: #f0f7f9;box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);}
+        
+        /* BLOQUEIO GERAL */
+        .ensaio-card.blocked {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .ensaio-card.blocked::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 1;
+        }
+        .ensaio-card.blocked::after {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background-image: linear-gradient(135deg, #ff0000 0%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 15px; font-weight: 900; font-size: 0.8rem;
+            text-transform: uppercase; text-align: center; box-sizing: border-box;
+            z-index: 2;
+        }
+
+        /* TEXTO ESPECÍFICO PARA ADESIVIDADE */
+        .ensaio-card.blocked.lock-adesividade::after {
+            content: "Marcação: Sextas";
+        }
+
+        /* TEXTO ESPECÍFICO PARA SECAGEM */
+        .ensaio-card.blocked.lock-secagem::after {
+            content: "Marcação: Seg-Qui a partir das 16:00; Retirar amostra no dia posterior até as 09:00";
+            font-size: 0.7rem;
+        }
+
+        /* TEXTO ESPECÍFICO PARA BLOQUEIO POR DOSAGEM */
+        .ensaio-card.blocked.lock-dosagem::after {
+            content: "Indisponível: Dosagem em andamento neste dia";
+            font-size: 0.72rem;
+        }
+
+        /* TEXTO ESPECÍFICO PARA BLOQUEIO POR AULA */
+        .ensaio-card.blocked.lock-aula::after {
+            content: "Indisponível: Aula agendada neste dia";
+            font-size: 0.72rem;
+        }
+
+        .ensaio-card img {width: 100%;height: 110px;object-fit: cover;display: block;border-bottom: 1px solid #eee;}
+        .ensaio-card .info {padding: 8px;flex-grow: 1;display: flex;align-items: center;justify-content: center;}
+        .ensaio-card h5 {margin: 0;font-size: 0.8rem;color: #333;font-weight: 700;line-height: 1.2;}
+        
+        .section-title-cards {color: #D35400;font-weight: 900;font-size: 1.1rem;margin: 30px 0 15px 0;text-transform: uppercase;border-bottom: 2px solid #eee;padding-bottom: 5px;text-align: left;}
+        .detalhes-ensaio {display: none;background: #f8fafb;padding: 20px;border-radius: 16px;border: 1px solid #e1e8ed;box-shadow: 0 4px 15px rgba(0,0,0,0.05);margin-bottom: 25px;animation: fadeIn 0.3s ease-in-out;}
+        .detalhes-grid {display: flex;flex-wrap: wrap;align-items: flex-end;gap: 20px;}
+        .detalhes-item {display: flex;flex-direction: column;align-items: flex-start;}
+        .detalhes-item.full-width {width: 100%;}
+        .detalhes-item label {font-size: 0.8rem;font-weight: 700;color: #1A4A5A;margin-bottom: 6px;text-transform: uppercase;}
+        .btn-opcao {background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);color: white;padding: 10px 18px;border: none;border-radius: 8px;cursor: pointer;font-weight: 600;transition: all 0.3s ease;margin-right: 8px;font-size: 0.85rem;}
+        .btn-opcao.active {background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important;}
+        .input-detalhe {padding: 10px;border: 1px solid #d1d9e0;border-radius: 8px;font-family: 'Inter', sans-serif;}
+        
+        .status-disponivel { color: green; font-weight: bold; }
+        .status-indisponivel { color: red; font-weight: bold; }
+
+        @keyframes fadeIn {from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); }}
+        .table-section { margin-top: 20px; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        #tabela-horarios { width: 100%; border-collapse: collapse; }
+        #tabela-horarios thead th { background-color: #1A4A5A; color: white; padding: 15px; text-transform: uppercase; }
+        #tabela-horarios td { padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1A4A5A; }
+
+        /* ── DASHBOARD STYLES ── */
+        .dash-kpi-card {
+            background:#fff; border-radius:14px; padding:20px 22px;
+            border:1px solid #d8e4e8; position:relative; overflow:hidden;
+            font-family:'Inter',sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .dash-kpi-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,74,90,0.1); }
+        .dash-kpi-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#6b8a96; margin-bottom:8px; }
+        .dash-kpi-value { font-size:2rem; font-weight:900; color:#1e2d35; line-height:1; margin-bottom:4px; }
+        .dash-kpi-sub { font-size:0.76rem; color:#6b8a96; }
+        .dash-chart-card {
+            background:#fff; border-radius:14px; padding:20px 22px;
+            border:1px solid #d8e4e8; font-family:'Inter',sans-serif;
+        }
+        .dash-chart-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#6b8a96; margin-bottom:3px; }
+        .dash-chart-title { font-size:0.95rem; font-weight:700; color:#1e2d35; margin-bottom:16px; }
+
+        
+        .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
+
+        .btn-planilha {
+            display: inline-block; margin-top: 15px; padding: 10px 20px;
+            background-color: #217346; color: white; text-decoration: none;
+            border-radius: 8px; font-weight: 700; font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .btn-planilha:hover { background-color: #1a5a37; }
+    </style>
+</head>
+<body>
+ 
+    <header class="header-main">  
+        <div class="header-bg-overlay"></div>  
+        <div class="header-container">  
+            <img src="img/foto.png" alt="Logotipo" class="header-logo">  
+            <div style="text-align: left;">  
+                <h1 class="header-title">Sistema de Agendamento</h1>  
+                <p class="header-subtitle">Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC</p>  
+                <div class="coord-info"> 
+                    <strong>Coordenação:</strong> Jorge Lucas (<a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>)<br>
+                    <strong>Técnico de Laboratório:</strong> Rômulo Jacome (<a href="mailto:romulojacome@yahoo.com.br">romulojacome@yahoo.com.br</a>)<br>
+                    <strong>Técnico de Equipamentos:</strong> Hermano Barreto (<a href="mailto:hermano@det.ufc.br">hermano@det.ufc.br</a>)  
+                </div>  
+                <span class="footer-tag">  
+                    © 2026 | <img src="img/lmp.jpeg" alt="LMP" style="height: 1rem; vertical-align: middle; mix-blend-mode: multiply;"> | Todos os direitos reservados  
+                </span>
+            </div>
+            <button onclick="abrirLoginDashboard()" style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.35);color:#fff;padding:10px 18px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:7px;white-space:nowrap;margin-left:20px;" onmouseover="this.style.background='rgba(211,84,0,0.75)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">📊 Dashboard</button>
+        </div>
+    </header>
+
+    <!-- MODAL LOGIN DASHBOARD -->
+    <div id="modal-login-dash" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:18px;padding:36px 40px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;font-family:'Inter',sans-serif;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">
+            <div style="font-size:2.5rem;margin-bottom:12px;">🔒</div>
+            <h2 style="color:#1A4A5A;font-size:1.2rem;margin-bottom:6px;">Acesso Restrito</h2>
+            <p style="color:#888;font-size:0.83rem;margin-bottom:22px;">Digite a senha para acessar o dashboard.</p>
+            <input type="password" id="input-senha-dash" placeholder="Senha" onkeydown="if(event.key==='Enter')verificarSenhaDash()" style="width:100%;padding:12px 16px;border:2px solid #ddd;border-radius:9px;font-size:1rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:8px;text-align:center;letter-spacing:0.1em;" onfocus="this.style.borderColor='#1A4A5A'" onblur="this.style.borderColor='#ddd'">
+            <p id="erro-senha-dash" style="color:#e74c3c;font-size:0.78rem;min-height:18px;margin-bottom:10px;"></p>
+            <button onclick="verificarSenhaDash()" style="width:100%;background:#1A4A5A;color:#fff;border:none;padding:12px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#D35400'" onmouseout="this.style.background='#1A4A5A'">Entrar</button>
+            <button onclick="fecharLoginDashboard()" style="margin-top:12px;background:none;border:none;color:#aaa;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- SEÇÃO DASHBOARD -->
+    <div id="secao-dashboard" style="display:none;">
+        <div style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #D35400;">
+            <div style="display:flex;align-items:center;gap:14px;"><span style="font-size:1.4rem;">📊</span><div><div style="color:#fff;font-weight:900;font-size:1rem;font-family:'Inter',sans-serif;">Dashboard de Agendamentos</div><div style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-family:'Inter',sans-serif;">Análise de uso — LMP</div></div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:6px 14px;font-size:0.77rem;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;"><div style="width:8px;height:8px;border-radius:50%;" id="dash-dot"></div><span id="dash-status-text">Aguardando...</span></div>
+                <button onclick="carregarDadosDash()" style="background:#D35400;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">↻ Atualizar</button>
+                <button onclick="fecharDashboard()" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:8px 14px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">✕ Fechar</button>
+            </div>
+        </div>
+        <div style="background:#fff;border-bottom:1px solid #e0e8ec;padding:12px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:'Inter',sans-serif;">
+            <label style="font-size:0.75rem;font-weight:700;color:#6b8a96;text-transform:uppercase;letter-spacing:0.06em;">Filtrar:</label>
+            <select id="dash-filtro-cat" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;"><option value="">Todas as categorias</option><option value="CARACTERIZAÇÃO DE MATERIAIS">Caracterização</option><option value="ENSAIOS MECÂNICOS">Ensaios Mecânicos</option><option value="USO DO LABORATÓRIO PARA AULAS">Aulas</option></select>
+            <select id="dash-filtro-periodo" onchange="dashFiltrarPorPeriodo()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Último ano</option><option value="0">Tudo</option></select>
+            <input type="date" id="dash-filtro-de" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;">
+            <span style="color:#aaa;font-size:0.8rem;">até</span>
+            <input type="date" id="dash-filtro-ate" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;">
+        </div>
+        <div style="padding:24px 32px;background:#f0f4f6;min-height:80vh;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:24px;">
+                <div class="dash-kpi-card" style="border-left:4px solid #1A4A5A;"><div class="dash-kpi-label">Total de Reservas</div><div class="dash-kpi-value" id="dash-kpi-total">—</div><div class="dash-kpi-sub">horários reservados</div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">📅</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #D35400;"><div class="dash-kpi-label">Ensaio Mais Usado</div><div class="dash-kpi-value" id="dash-kpi-top" style="font-size:1rem;line-height:1.3;margin-top:4px;">—</div><div class="dash-kpi-sub" id="dash-kpi-top-sub"></div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">🔬</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #27ae60;"><div class="dash-kpi-label">Usuários Únicos</div><div class="dash-kpi-value" id="dash-kpi-usuarios">—</div><div class="dash-kpi-sub">pesquisadores distintos</div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">👤</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #f39c12;"><div class="dash-kpi-label">Horário de Pico</div><div class="dash-kpi-value" id="dash-kpi-pico" style="font-size:1.6rem;">—</div><div class="dash-kpi-sub" id="dash-kpi-pico-sub"></div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">⏰</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px;">
+                <div class="dash-chart-card"><div class="dash-chart-label">Ranking</div><div class="dash-chart-title">Procedimentos mais agendados</div><div style="position:relative;height:280px;"><canvas id="dash-chart-proc"></canvas></div></div>
+                <div class="dash-chart-card"><div class="dash-chart-label">Distribuição</div><div class="dash-chart-title">Por categoria</div><div style="position:relative;height:280px;"><canvas id="dash-chart-cat"></canvas></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+                <div class="dash-chart-card"><div class="dash-chart-label">Evolução temporal</div><div class="dash-chart-title">Reservas por semana</div><div style="position:relative;height:200px;"><canvas id="dash-chart-time"></canvas></div></div>
+                <div class="dash-chart-card"><div class="dash-chart-label">Horários mais usados</div><div class="dash-chart-title">Picos de uso no dia</div><div style="position:relative;height:200px;"><canvas id="dash-chart-hora"></canvas></div></div>
+            </div>
+            <div style="background:#fff;border-radius:14px;border:1px solid #d8e4e8;overflow:hidden;">
+                <div style="padding:18px 22px 14px;border-bottom:1px solid #e8eef1;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#6b8a96;font-family:'Inter',sans-serif;">Detalhamento completo</div><div style="font-size:1rem;font-weight:700;color:#1e2d35;font-family:'Inter',sans-serif;margin-top:2px;">Todos os procedimentos</div></div><span id="dash-table-count" style="font-size:0.78rem;color:#6b8a96;font-family:'Inter',sans-serif;"></span></div>
+                <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;"><thead><tr><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">#</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Procedimento</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Categoria</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Reservas</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Frequência</th></tr></thead><tbody id="dash-tabela-corpo"><tr><td colspan="5" style="text-align:center;padding:30px;color:#aaa;font-size:0.85rem;">Carregando...</td></tr></tbody></table></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AJUDA -->
+    <div id="modal-ajuda" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; overflow-y:auto; padding: 30px 15px;">
+        <div style="background:#fff; max-width:720px; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); font-family:'Inter',sans-serif;">
+            <!-- Header do modal -->
+            <div style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%); padding:25px 30px; display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                    <h2 style="margin:0; color:#fff; font-size:1.4rem; font-weight:900;">📖 Como usar o sistema</h2>
+                    <p style="margin:5px 0 0; color:#FFD27D; font-size:0.85rem;">Siga os passos abaixo para realizar seu agendamento</p>
+                </div>
+                <button onclick="document.getElementById('modal-ajuda').style.display='none'" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+            </div>
+            <!-- Corpo do modal -->
+            <div style="padding:25px 30px;">
+
+                <!-- Passo 1 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Escolha a categoria de atividade</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Na tela inicial, selecione o tipo de uso que melhor descreve sua atividade:<br>
+                        🔬 <b>Caracterização</b> — Ensaios em agregados e produção de misturas asfálticas.<br>
+                        🏗️ <b>Ensaios Mecânicos</b> — Ensaios em prensas.<br>
+                        🎓 <b>Uso para Aulas</b> — Reserva do espaço completo para aulas.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 2 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Preencha suas informações</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Informe <b>Nome Completo</b>, <b>E-mail</b>, <b>Orientador</b> e <b>Projeto/Trabalho</b> para caracterização. Em seguida, selecione a <b>Data do Uso</b> — a disponibilidade de horários será carregada automaticamente.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 3 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">3</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Selecione o equipamento e preencha os detalhes</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Clique no <b>card</b> do equipamento desejado. Cards em <span style="color:red; font-weight:700;">vermelho</span> indicam restrições naquele dia (ex.: Adesividade só às sextas). Informe a <b>quantidade de amostras</b> e use o campo <b>Observações</b> para necessidades especiais (solventes, equipamentos extras, etc.).</p>
+                    </div>
+                </div>
+
+                <!-- Passo 4 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">4</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Marque os horários e insira a senha</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Na tabela abaixo do formulário, marque os <b>check-boxes</b> dos horários pretendidos. Horários marcados como <b>"Reservado"</b> não estão disponíveis. Digite a <b>senha de autorização</b> fornecida pela coordenação para liberar o envio.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 5 — destaque -->
+                <div style="background:#fff8f0; border:2px solid #D35400; border-radius:12px; padding:18px; display:flex; gap:15px; align-items:flex-start; margin-bottom:22px;">
+                    <div style="background:#D35400; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">5</div>
+                    <div>
+                        <strong style="color:#D35400; font-size:1rem;">⚠️ Confirme pelo WhatsApp — passo obrigatório!</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Clique em <b>"Confirmar Agendamento"</b>. O sistema gerará um link para o WhatsApp. <b>Você precisa clicar e enviar a mensagem</b> — só assim o agendamento é validado na planilha após o técnico ou coordenador clicar em "Aceitar".</p>
+                    </div>
+                </div>
+
+                <!-- Regras gerais -->
+                <div style="background:#f0f7f9; border-left:4px solid #1A4A5A; border-radius:8px; padding:15px; font-size:0.85rem; color:#444; line-height:1.7;">
+                    <strong style="color:#1A4A5A;">📋 Regras Gerais</strong><br>
+                    👟 <b>EPIs obrigatórios:</b> calçados fechados(proibido chinelo, cróquis, sandália etc.) e proteções individuais.<br>
+                    📅 <b>Antecedência:</b> reservas até sexta às 12h têm prioridade para a semana seguinte.<br>
+                    🚫 <b>Aulas:</b> agendamentos de aula bloqueiam outros ensaios no mesmo horário para segurança dos alunos.
+                </div>
+
+            </div>
+            <div style="padding:15px 30px 25px; text-align:center;">
+                <button onclick="document.getElementById('modal-ajuda').style.display='none'" style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%); color:#fff; border:none; padding:12px 40px; border-radius:50px; font-weight:700; font-size:0.95rem; cursor:pointer;">Entendido, vamos começar!</button>
+            </div>
+        </div>
+    </div>
+
+    <section id="selecao-inicial">
+        <div style="width:100%; text-align:center; padding: 30px 20px 0; max-width:1100px; margin: 0 auto;">
+            <p style="font-size:1rem; color:#555; margin-bottom:5px;">Selecione abaixo o tipo de atividade para iniciar o agendamento.</p>
+            <button onclick="document.getElementById('modal-ajuda').style.display='flex'; document.getElementById('modal-ajuda').style.display='block';" style="background:none; border:2px solid #1A4A5A; color:#1A4A5A; padding:8px 22px; border-radius:50px; font-weight:700; font-size:0.85rem; cursor:pointer; margin-bottom:10px; transition:all 0.2s;" onmouseover="this.style.background='#1A4A5A';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='#1A4A5A'">❓ Como funciona o agendamento?</button>
+        </div>
+        <div class="categoria-card" onclick="escolherCategoria('CARACTERIZAÇÃO DE MATERIAIS')">
+            <span class="icon-grande">🔬</span>
+            <h3>Caracterização de Materiais</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Ensaios em agregados e produção de misturas asfálticas.</p>
+        </div>
+        <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
+            <span class="icon-grande">🏗️</span>
+            <h3>Ensaios Mecânicos</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Uso de prensas.</p>
+        </div>
+        <div class="categoria-card" onclick="escolherCategoria('USO DO LABORATÓRIO PARA AULAS')">
+            <span class="icon-grande">🎓</span>
+            <h3>Uso para Aulas</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Reserva do espaço para aulas. Bloqueia outras atividades no horário.</p>
+        </div>
+    </section>
+
+    <div id="conteudo-principal">
+        <main class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
+            <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao início</button>
+ 
+            <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
+                    <ul id="lista-info-geral" style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;"></ul>
+                </div>
+                <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h3 style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;"><span><span class="icon">📝</span> INSTRUÇÕES</span> <button onclick="document.getElementById('modal-ajuda').style.display='block'" style="background:none; border:1px solid #1A4A5A; color:#1A4A5A; padding:4px 12px; border-radius:20px; font-size:0.72rem; font-weight:700; cursor:pointer;">Ver guia completo</button></h3>
+                    <ol id="texto-instrucoes" style="font-size: 0.85rem; color: #555; padding-left: 18px; margin: 0; line-height: 1.9;"></ol>
+                    <p style="margin:12px 0 0; padding:8px 12px; background:#fff8f0; border-left:3px solid #D35400; border-radius:6px; font-size:0.78rem; color:#c0392b; font-weight:600;">⚠️ O agendamento só é confirmado após o envio e aceite no WhatsApp.</p>
+                </div>
+            </section>
+
+            <section class="booking-section card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="nome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail</label>
+                        <input type="email" id="email" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="input-group campos-extras" style="display:none;">
+                        <label>Orientador</label>
+                        <input type="text" id="orientador" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="input-group campos-extras" style="display:none;">
+                        <label>Projeto/Trabalho</label>
+                        <input type="text" id="projeto" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div id="grupo-qtd-alunos" class="input-group" style="display:none;">
+                        <label>Número de Alunos</label>
+                        <input type="number" id="qtd-alunos" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Data do Uso</label>
+                        <input type="date" id="data" onchange="verificarRestricoesData(); carregarHorarios();" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="input-group">
+                        <label>Categoria</label>
+                        <input type="text" id="categoria-display" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; background: #f9f9f9; font-weight: bold;">
+                    </div>
+                </div>
+
+                <h4 id="titulo-selecao-cards" class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
+                
+                <div id="container-cards-padrao" class="cards-container"></div>
+                <div id="container-lista-aulas" class="modo-lista-aulas"></div>
+
+                <div id="container-detalhes" class="detalhes-ensaio">
+                    <div class="detalhes-grid">
+                        <div id="opcoes-estado-mistura" style="display:none;" class="detalhes-item">
+                            <label>Estado da Mistura:</label>
+                            <div>
+                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Solta', this)">Mistura Solta</button>
+                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
+                            </div>
+                        </div>
+                        <div class="detalhes-item">
+                            <label>Qtd. Amostras:</label>
+                            <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()">
+                        </div>
+                        <div class="detalhes-item full-width" style="margin-top: 15px;">
+                            <label>Observações:</label>
+                            <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Notas adicionais..." oninput="atualizarDadosFinais()">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="maquina" value="">
+                <div id="caixa-equipamentos" class="equipamentos-info">
+                    <h4>🛠️ Equipamentos/Normas:</h4>
+                    <p id="lista-equipamentos"></p>
+                </div>
+            </section>
+
+            <section id="area-acao" class="action-area" style="text-align: center; margin: 30px 0;">
+                <input type="password" id="senha-lab" placeholder="Senha do Lab" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                <button id="btn-confirmar" onclick="reservarSelecionados()" style="background-color: #1A4A5A; color: white; padding: 11px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Confirmar Agendamento</button>
+            </section>
+
+            <section class="table-section">
+                <table id="tabela-horarios">
+                    <thead>
+                        <tr><th style="width: 40%;">Horário</th><th style="width: 30%;">Status</th><th style="width: 30%;">Ação</th></tr>
+                    </thead>
+                    <tbody id="corpo-agenda"></tbody>
+                </table>
+                <div style="text-align: center;">
+                    <a href="https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0" target="_blank" class="btn-planilha">📊 Consultar Agenda (Planilha)</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0";
+        let ensaioSelecionado = "";
+        let subtipoSelecionado = "";
+        let categoriaAtiva = "";
+
+        const contatosResponsaveis = {
+            "CARACTERIZAÇÃO DE MATERIAIS": "5585996467818", 
+            "USO DO LABORATÓRIO PARA AULAS": "5585996467818", 
+            "ENSAIOS MECÂNICOS": "5585988075403" 
+        };
+
+        const cardsCaracterizacao = [
+            {n: "Dosagem Marshall", img: "Marshall.jpeg", eq: "Prensa Marshall, Estufas, Compactador"},
+            {n: "Dosagem Superpave", img: "superpave.jpeg", eq: "Compactador Giratório, Rice Test, Estufas"},
+            {n: "Extração de ligante", img: "rotarex.jpeg", eq: "Rotarex"},
+            {n: "Fluir ligante", img: "fluir.jpeg", eq: "Estufa, Recipientes"},
+            {n: "Homogeneização", img: "quarte.jpeg", eq: "Quarteador, Bandejas"},
+            {n: "Abrasão Los Angeles", img: "la.jpeg", eq: "Máquina Los Angeles"},
+            {n: "Densidade e absorção", img: "dens.jpeg", eq: "Balança Hidrostática"},
+            {n: "Adesividade (Tradicional)", img: "adesiv.jpeg", eq: "Béquer, Estufa, Água Destilada"},
+            {n: "Adesividade (ABS)", img: "abs.jpeg", eq: "POSITEST AT, Estufas"},
+            {n: "Granulometria", img: "granu.jpeg", eq: "Agitador, Peneiras"},
+            {n: "Indice de forma", img: "if.jpeg", eq: "Paquímetro ou Crivos Circulares e Redutores"},
+            {n: "Sanidade", img: "sani.jpeg", eq: "Agentes Químicos, Béquer, Estufa"},
+            {n: "Secagem / Estufa", img: "estufa.jpeg", eq: "Estufa"},
+            {n: "Serragem de CPs", img: "serra.jpeg", eq: "Serra de Bancada"},
+            {n: "Balança", img: "balanca.jpeg", eq: "Balanças"}
+        ];
+
+        const cardsMecanicos = [
+            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa MTS", img: "mts.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa RiO", img: "rio.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."}
+        ];
+
+        function escolherCategoria(nome) {
+            categoriaAtiva = nome;
+            document.getElementById('categoria-display').value = nome;
+            document.getElementById('selecao-inicial').style.display = 'none';
+            document.getElementById('conteudo-principal').style.display = 'block';
+
+            // ── INSTRUÇÕES DINÂMICAS POR CATEGORIA ──
+            const instrucoes = document.getElementById('texto-instrucoes');
+            if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                instrucoes.innerHTML = `
+                    <li>✏️ <b>Preencha</b> seu <b>Nome Completo</b>.</li>
+                    <li>📧 Informe seu <b>E-mail</b>.</li>
+                    <li>👥 Informe o <b>Número de Alunos</b>.</li>
+                    <li>📅 Selecione a <b>Data do Uso e os ensaios que serão realizados na aula</b>.</li>
+                    <li>🔑 <b>Digite</b> a senha do laboratório.</li>
+                    <li>☑️ <b>Marque</b> os horários na tabela e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
+                `;
+            } else {
+                instrucoes.innerHTML = `
+                    <li>✏️ <b>Preencha</b> nome, e-mail, orientador, projeto e a data.</li>
+                    <li>🖱️ <b>Clique</b> no card do equipamento ou procedimento desejado.</li>
+                    <li>🔢 Informe a quantidade de amostras e observações, se houver.</li>
+                    <li>🔑 <b>Digite</b> a senha do laboratório.</li>
+                    <li>☑️ <b>Marque</b> os horários na tabela abaixo.</li>
+                    <li>✅ <b>Confirme</b> o agendamento e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
+                `;
+            }
+            
+            const containerCards = document.getElementById('container-cards-padrao');
+            const containerLista = document.getElementById('container-lista-aulas');
+            const extras = document.querySelectorAll('.campos-extras');
+            const tituloCards = document.getElementById('titulo-selecao-cards');
+            const listaInfo = document.getElementById('lista-info-geral');
+            const grupoAlunos = document.getElementById('grupo-qtd-alunos');
+            
+            ensaioSelecionado = "";
+            subtipoSelecionado = "";
+            containerCards.innerHTML = "";
+            document.getElementById('caixa-equipamentos').style.display = 'none';
+            document.getElementById('container-detalhes').style.display = 'none';
+
+            if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                tituloCards.innerText = "➤ SELECIONE OS ENSAIOS QUE SERÃO APRESENTADOS EM AULA";
+                listaInfo.innerHTML = `
+                    <li style="margin-bottom: 8px;"><strong>1.</strong> É proibida a entrada usando chinelos, sandálias ou calçados abertos.</li>
+                    <li style="margin-bottom: 8px;"><strong>2.</strong> Não é permitido comer ou beber no laboratório.</li>
+                    <li style="margin-bottom: 8px; color: #D35400;"><strong>3.</strong> AGENDAMENTO DE AULA: Tem prioridade e bloqueia os horários selecionados para outros usuários.</li>
+                `;
+                grupoAlunos.style.display = 'block';
+                containerCards.style.display = 'none';
+                containerLista.style.display = 'flex';
+                extras.forEach(el => el.style.display = 'none');
+                gerarListaAulas();
+            } else {
+                listaInfo.innerHTML = `
+                    <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar EPIs obrigatórios.</li>
+                    <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o laboratório limpo.</li>
+                    <li style="margin-bottom: 8px; color: red;"><strong>3.</strong> Reservas até sexta às 12:00 terão prioridade para a próxima semana.</li>
+                `;
+                grupoAlunos.style.display = 'none';
+                containerCards.style.display = 'grid';
+                containerLista.style.display = 'none';
+                extras.forEach(el => el.style.display = 'block');
+                
+                tituloCards.innerText = (nome === 'ENSAIOS MECÂNICOS') ? "➤ SELECIONE O EQUIPAMENTO" : "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
+                
+                const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
+                listaUsar.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'ensaio-card';
+                    card.setAttribute('data-nome', item.n); 
+                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq);
+                    card.innerHTML = `
+                        <img src="img/${item.img}" alt="${item.n}">
+                        <div class="info"><h5>${index + 1} - ${item.n}</h5></div>
+                    `;
+                    containerCards.appendChild(card);
+                });
+                verificarRestricoesData();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function verificarRestricoesData() {
+            const dataInput = document.getElementById('data').value;
+            if (!dataInput) return;
+
+            const dataSelecionada = new Date(dataInput + 'T00:00:00');
+            const diaSemana = dataSelecionada.getDay();
+
+            document.querySelectorAll('.ensaio-card').forEach(card => {
+                const nomeEnsaio = card.getAttribute('data-nome');
+                card.classList.remove('blocked', 'lock-adesividade', 'lock-secagem');
+
+                if (nomeEnsaio === "Adesividade (Tradicional)") {
+                    if (diaSemana !== 5) {
+                        card.classList.add('blocked', 'lock-adesividade');
+                        if (ensaioSelecionado === "Adesividade (Tradicional)") resetarSelecao();
+                    }
+                }
+
+                if (nomeEnsaio === "Secagem / Estufa") {
+                    if (diaSemana === 0 || diaSemana === 5 || diaSemana === 6) { 
+                        card.classList.add('blocked', 'lock-secagem');
+                        if (ensaioSelecionado === "Secagem / Estufa") resetarSelecao();
+                    }
+                }
+            });
+
+            // --- BLOQUEIO POR DOSAGEM (SOMENTE PARA CARACTERIZAÇÃO) ---
+            if (categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS') {
+                const ensaiosBloqueadosPorDosagem = [
+                    "Dosagem Marshall",
+                    "Dosagem Superpave",
+                    "Fluir ligante",
+                    "Homogeneização",
+                    "Abrasão Los Angeles",
+                    "Densidade e absorção",
+                    "Adesividade (ABS)"
+                ];
+
+                const dosagensNoDia = ["Dosagem Marshall", "Dosagem Superpave"].filter(dosagem =>
+                    Object.keys(reservasCache).some(chave => chave.startsWith(dataInput + "-" + dosagem + "-"))
+                );
+                const hasDosagemNoDia = dosagensNoDia.length > 0;
+                const dosagemReservada = hasDosagemNoDia ? dosagensNoDia[0] : null;
+
+                document.querySelectorAll('.ensaio-card').forEach(card => {
+                    const nomeEnsaio = card.getAttribute('data-nome');
+
+                    if (card.classList.contains('lock-dosagem')) {
+                        card.classList.remove('blocked', 'lock-dosagem');
+                    }
+
+                    if (hasDosagemNoDia && ensaiosBloqueadosPorDosagem.includes(nomeEnsaio)) {
+                        const ehDosagemConcorrente = (nomeEnsaio === "Dosagem Marshall" || nomeEnsaio === "Dosagem Superpave") && nomeEnsaio !== dosagemReservada;
+                        const ehDependente = !nomeEnsaio.startsWith("Dosagem");
+
+                        if (ehDosagemConcorrente || ehDependente) {
+                            card.classList.add('blocked', 'lock-dosagem');
+                            if (ensaioSelecionado === nomeEnsaio) resetarSelecao();
+                        }
+                    }
+                });
+            }
+
+            document.querySelectorAll('.ensaio-card').forEach(card => {
+                if (card.classList.contains('lock-aula')) {
+                    card.classList.remove('blocked', 'lock-aula');
+                }
+            });
+
+            atualizarTabelaHorarios(diaSemana);
+            if (ensaioSelecionado) carregarHorarios();
+        }
+
+        function atualizarTabelaHorarios(dia) {
+            const corpo = document.getElementById('corpo-agenda');
+            const rows = corpo.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const horaStr = row.cells[0].innerText;
+                const horaInt = parseInt(horaStr.split(':')[0]);
+                const statusTd = row.cells[1];
+
+                if (statusTd.classList.contains('status-indisponivel') && statusTd.innerText.includes('Reservado')) {
+                    return;
+                }
+
+                const checkbox = row.querySelector('input');
+
+                if (ensaioSelecionado === "Secagem / Estufa") {
+                    if (horaInt < 16) {
+                        if (checkbox) { checkbox.disabled = true; checkbox.checked = false; }
+                        statusTd.innerText = "Restrito (Início 16h)";
+                        statusTd.className = "status-indisponivel";
+                    } else {
+                        if (checkbox) checkbox.disabled = false;
+                        statusTd.innerText = "Disponível";
+                        statusTd.className = "status-disponivel";
+                    }
+                } else {
+                    if (checkbox) checkbox.disabled = false;
+                    statusTd.innerText = "Disponível";
+                    statusTd.className = "status-disponivel";
+                }
+            });
+        }
+
+        function resetarSelecao() {
+            ensaioSelecionado = "";
+            document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('container-detalhes').style.display = "none";
+            document.getElementById('caixa-equipamentos').style.display = "none";
+            atualizarDadosFinais();
+        }
+
+        function selecionarEnsaio(elemento, nome, eq) {
+            if (elemento.classList.contains('blocked')) {
+                const msg = elemento.classList.contains('lock-adesividade') ? "Este ensaio só pode ser agendado para Sextas-feiras." : "A secagem em estufa só é permitida de Segunda a Quinta-feira.";
+                alert(msg);
+                return;
+            }
+
+            document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
+            elemento.classList.add('selected');
+            ensaioSelecionado = nome;
+            
+            const nomeLower = nome.toLowerCase();
+            const precisaOpcoesMistura = categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS' && (nomeLower.includes("dosagem marshall") || nomeLower.includes("dosagem superpave"));
+            
+            document.getElementById('container-detalhes').style.display = "block";
+            document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesMistura ? "block" : "none";
+            document.getElementById('caixa-equipamentos').style.display = "block";
+            document.getElementById('lista-equipamentos').innerText = eq;
+            
+            if(!precisaOpcoesMistura) subtipoSelecionado = "";
+            
+            const dataInput = document.getElementById('data').value;
+            
+            carregarHorarios(); 
+
+            if (dataInput) {
+                const dataSel = new Date(dataInput + 'T00:00:00');
+                atualizarTabelaHorarios(dataSel.getDay()); 
+            }
+
+            atualizarDadosFinais();
+        }
+
+        function gerarListaAulas() {
+            const container = document.getElementById('container-lista-aulas');
+            const cardsParaAulas = (typeof cardsCaracterizacao !== 'undefined') ? cardsCaracterizacao : [];
+            let html = '<h4>Marque os ensaios da aula:</h4>';
+            cardsParaAulas.forEach(item => {
+                html += `<label class="item-aula-checkbox"><input type="checkbox" class="check-ensaio-aula" value="${item.n}" onchange="atualizarDadosFinais()"><span>${item.n}</span></label>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function definirSubtipo(tipo, botao) {
+            document.querySelectorAll('.btn-opcao').forEach(b => b.classList.remove('active'));
+            botao.classList.add('active');
+            subtipoSelecionado = " (" + tipo + ")";
+            atualizarDadosFinais();
+        }
+
+        function atualizarDadosFinais() {
+            const hiddenInput = document.getElementById('maquina');
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                const sel = Array.from(document.querySelectorAll('.check-ensaio-aula:checked')).map(c => c.value);
+                const qtdAlunos = document.getElementById('qtd-alunos').value;
+                hiddenInput.value = `[AULA] Alunos: ${qtdAlunos} | Ensaios: ${sel.join(', ')}`;
+            } else {
+                const qtd = document.getElementById('qtd-amostras').value;
+                const obs = document.getElementById('obs-ensaio').value;
+                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras) [OBS: ${obs}]`;
+            }
+        }
+
+        let reservasCache = {};
+        let reservasCacheCarregado = false;
+
+        async function carregarReservasAPI() {
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbxWYv8U59ndofhYvF-cnpLKw77N0zhqfLQj4rCHGCpMWNdFvdUFnSoL0YvDSmHLWyZJSg/exec";
+            try {
+                const resp = await fetch(BASE_URL);
+                reservasCache = await resp.json();
+            } catch (e) {
+                console.warn("Não foi possível carregar reservas:", e);
+                reservasCache = {};
+            }
+            reservasCacheCarregado = true;
+            const dataJaEscolhida = document.getElementById('data') && document.getElementById('data').value;
+            if (dataJaEscolhida && categoriaAtiva) {
+                verificarRestricoesData(); 
+                carregarHorarios();        
+            }
+        }
+
+        function carregarHorarios() {
+            const corpo = document.getElementById('corpo-agenda');
+            const dataUso = document.getElementById('data').value;
+
+            if (!reservasCacheCarregado) {
+                corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">⏳ A carregar disponibilidade...</td></tr>';
+                return;
+            }
+
+            const ehCategoriaAulas = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS';
+            if (!dataUso || (!ensaioSelecionado && !ehCategoriaAulas)) {
+                corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">Selecione uma data e um ensaio para ver a disponibilidade.</td></tr>';
+                return;
+            }
+
+            let html = '';
+
+            for (let h = 7; h <= 17; h++) {
+                const hora = h.toString().padStart(2, '0') + ":00";
+                const horaFim = (h + 1).toString().padStart(2, '0') + ":00";
+                const horaExibida = `${hora} - ${horaFim}`;
+                let ocupado = false;
+                let ocupadoPor = "";
+
+                if (dataUso) {
+                    if (!ehCategoriaAulas && ensaioSelecionado) {
+                        const chave = `${dataUso}-${ensaioSelecionado}-${hora}`;
+                        if (reservasCache[chave]) {
+                            ocupado = true;
+                            ocupadoPor = reservasCache[chave];
+                        }
+                    }
+
+                    const chaveAula = `${dataUso}-[AULA]-${hora}`;
+                    if (reservasCache[chaveAula]) {
+                        if (categoriaAtiva !== 'ENSAIOS MECÂNICOS') {
+                            ocupado = true;
+                            ocupadoPor = `🎓 AULA (${reservasCache[chaveAula]})`;
+                        }
+                    }
+                }
+
+                const restritoPorSecagem = ensaioSelecionado === "Secagem / Estufa" && h < 16;
+
+                if (ocupado) {
+                    html += `<tr style="background:#fff5f5;">
+                        <td>${horaExibida}</td>
+                        <td class="status-indisponivel">🔒 Reservado por: ${ocupadoPor}</td>
+                        <td style="color:#aaa;">—</td>
+                    </tr>`;
+                } else if (restritoPorSecagem) {
+                    html += `<tr style="background:#fff8f0;">
+                        <td>${horaExibida}</td>
+                        <td class="status-indisponivel">⛔ Restrito (Início 16h)</td>
+                        <td style="color:#aaa;">—</td>
+                    </tr>`;
+                } else {
+                    const isDosagem = (ensaioSelecionado === "Dosagem Marshall" || ensaioSelecionado === "Dosagem Superpave") && categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS';
+                    html += `<tr>
+                        <td>${horaExibida}</td>
+                        <td class="status-disponivel">Disponível</td>
+                        <td><input type="checkbox" name="selecionar-hora" value="${hora}" ${isDosagem ? 'checked disabled' : ''}></td>
+                    </tr>`;
+                }
+            }
+            corpo.innerHTML = html;
+
+            if (ensaioSelecionado) {
+                const dataInput = document.getElementById('data').value;
+                if (dataInput) {
+                    const diaSemana = new Date(dataInput + 'T00:00:00').getDay();
+                    atualizarTabelaHorarios(diaSemana);
+                }
+            }
+        }
+
+        function voltarInicio() {
+            document.getElementById('selecao-inicial').style.display = 'flex';
+            document.getElementById('conteudo-principal').style.display = 'none';
+        }
+
+        async function reservarSelecionados() {
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
+            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
+            const dataUso = document.getElementById('data').value;
+            const detalhes = document.getElementById('maquina').value;
+            const senha = document.getElementById('senha-lab').value;
+            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+
+            if (!nome || !email || !dataUso || check.length === 0) { 
+                alert("Por favor, preencha Nome, E-mail, Data e escolha os horários."); 
+                return; 
+            }
+
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                const ensaiosAula = document.querySelectorAll('.check-ensaio-aula:checked');
+                if (ensaiosAula.length === 0) {
+                    alert("Por favor, selecione ao menos um ensaio para a aula nas caixas de seleção.");
+                    return;
+                }
+            } else {
+                if (!ensaioSelecionado) {
+                    alert("Por favor, selecione o equipamento ou procedimento clicando nos ícones acima.");
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('btn-confirmar');
+            btn.disabled = true;
+            btn.innerText = "A gravar...";
+
+            const ID_UNICO = "ID-" + Date.now();
+            ultimoIDUnico = ID_UNICO; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbxN08BWYIU54BBX38DaXr551fMyjdr0Meudq3SKr2EIvgFq9HugCkIqCi3C41vEjuzPwA/exec"; 
+            const horas = Array.from(check).map(c => c.value);
+
+            const reservas = [{
+                chave: categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
+                    ? `${dataUso}-[AULA]`
+                    : `${dataUso}-${ensaioSelecionado}`,
+                maquina: detalhes,
+                horas: horas
+            }];
+
+            const abaDestino = categoriaAtiva === 'ENSAIOS MECÂNICOS' ? 'Prensas' : 'Reservas';
+
+            const payload = {
+                action: 'reservar_lote',
+                id: ID_UNICO,
+                senha: senha,
+                aba: abaDestino,
+                usuario: { nome, email, orientador, projeto },
+                reservas: reservas,
+                data: dataUso
+            };
+
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                });
+
+                const respText = await response.text();
+
+                if (!respText.includes("Sucesso")) {
+                    alert("❌ Erro ao salvar: " + respText);
+                    return;
+                }
+
+                carregarHorarios(); 
+
+                const numeroDestino = contatosResponsaveis[categoriaAtiva];
+                let prioridadeAviso = "";
+                if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                    prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
+                }
+
+                let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
+                mensagem += "*Aluno/Professor:* " + nome + "\n";
+                mensagem += "*E-mail:* " + email + "\n";
+                mensagem += "*Orientador:* " + orientador + "\n";
+                mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
+                mensagem += "*Categoria:* " + categoriaAtiva + "\n";
+                mensagem += "*Procedimento:* " + detalhes + "\n";
+                mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
+                mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
+                mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+                mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
+
+                const areaAcao = document.getElementById('area-acao');
+                areaAcao.innerHTML = `
+                    <div style="margin-top: 20px; padding: 20px; border: 2px dashed #25D366; border-radius: 10px; background-color: #f0fff4;">
+                        <p style="color: #128C7E; font-weight: bold; margin-bottom: 15px;">✅ Agendamento gravado! Agora envie para o WhatsApp:</p>
+                        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <a href="https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(mensagem)}" 
+                               target="_blank" 
+                               style="background-color: #25D366; color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 1.3rem; display: inline-block; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); transition: transform 0.2s;">
+                               🚀 ENVIAR PARA O WHATSAPP
+                            </a>
+                            <button onclick="copiarMensagem()" 
+                                    style="background-color: #1A4A5A; color: white; padding: 18px 40px; border-radius: 50px; border: none; font-weight: 900; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(26, 74, 90, 0.4); transition: transform 0.2s;">
+                                📋 COPIAR MENSAGEM
+                            </button>
+                        </div>
+                    </div>`;
+
+            } catch (e) {
+                alert("Erro técnico ao conectar ao servidor: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Confirmar Agendamento";
+            }
+        }
+
+        let ultimoIDUnico = "";
+
+        function copiarMensagem() {
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
+            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
+            const dataUso = document.getElementById('data').value;
+            const detalhes = document.getElementById('maquina').value;
+            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+            const horas = Array.from(check).map(c => c.value);
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbxN08BWYIU54BBX38DaXr551fMyjdr0Meudq3SKr2EIvgFq9HugCkIqCi3C41vEjuzPwA/exec";
+            const ID_UNICO = ultimoIDUnico;
+
+            let prioridadeAviso = "";
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
+            }
+
+            let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
+            mensagem += "*Aluno/Professor:* " + nome + "\n";
+            mensagem += "*E-mail:* " + email + "\n";
+            mensagem += "*Orientador:* " + orientador + "\n";
+            mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
+            mensagem += "*Categoria:* " + categoriaAtiva + "\n";
+            mensagem += "*Procedimento:* " + detalhes + "\n";
+            mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
+            mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
+            mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+            mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
+
+            navigator.clipboard.writeText(mensagem).then(() => {
+                alert('✅ Mensagem copiada para a área de transferência!');
+            }).catch(err => {
+                alert('❌ Erro ao copiar: ' + err);
+            });
+        }
+
+        window.onload = carregarReservasAPI;
+        
+        // Sincronizar a cada 30 segundos para detectar deleções
+        setInterval(carregarReservasAPI, 30000);
+    </script>
+
+    <!-- CHART.JS + DASHBOARD SCRIPT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        // ── SENHA E CONTROLE ──
+        const SENHA_DASH = "blaublau";
+        let dashCarregado = false;
+        let dadosBrutosDash = {};
+        let dadosFiltradosDash = {};
+        let chartsDash = {};
+
+        function abrirLoginDashboard() {
+            document.getElementById('modal-login-dash').style.display = 'block';
+            document.getElementById('input-senha-dash').value = '';
+            document.getElementById('erro-senha-dash').textContent = '';
+            setTimeout(() => document.getElementById('input-senha-dash').focus(), 100);
+        }
+
+        function fecharLoginDashboard() {
+            document.getElementById('modal-login-dash').style.display = 'none';
+        }
+
+        function verificarSenhaDash() {
+            const val = document.getElementById('input-senha-dash').value;
+            if (val === SENHA_DASH) {
+                fecharLoginDashboard();
+                abrirDashboard();
+            } else {
+                document.getElementById('erro-senha-dash').textContent = '❌ Senha incorreta.';
+                document.getElementById('input-senha-dash').focus();
+            }
+        }
+
+        function abrirDashboard() {
+            document.getElementById('secao-dashboard').style.display = 'block';
+            document.getElementById('selecao-inicial').style.display = 'none';
+            document.getElementById('conteudo-principal').style.display = 'none';
+            window.scrollTo(0, 0);
+            if (!dashCarregado) carregarDadosDash();
+        }
+
+        function fecharDashboard() {
+            document.getElementById('secao-dashboard').style.display = 'none';
+            document.getElementById('selecao-inicial').style.display = 'flex';
+        }
+
+        // ── CARREGAR DADOS ──
+        async function carregarDadosDash() {
+            const dot = document.getElementById('dash-dot');
+            const txt = document.getElementById('dash-status-text');
+            dot.style.background = '#f39c12';
+            txt.textContent = 'Carregando...';
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbwLpm7vxFHibdzH0ALxmbIYsvAmuFWb_TNGW711KysKrvkYo2vvIpTuYU4d61vyQirVXA/exec";
+            try {
+                const resp = await fetch(BASE_URL);
+                dadosBrutosDash = await resp.json();
+                dot.style.background = '#2ecc71';
+                txt.textContent = Object.keys(dadosBrutosDash).length + ' registros';
+                dashCarregado = true;
+                dashFiltrarPorPeriodo();
+            } catch(e) {
+                dot.style.background = '#e74c3c';
+                txt.textContent = 'Erro na conexão';
+            }
+        }
+
+        // ── MAPEAMENTO ──
+        const dashCatMap = {
+            "Dosagem Marshall":"CARACTERIZAÇÃO DE MATERIAIS","Dosagem Superpave":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Extração de ligante":"CARACTERIZAÇÃO DE MATERIAIS","Fluir ligante":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Homogeneização":"CARACTERIZAÇÃO DE MATERIAIS","Abrasão Los Angeles":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Densidade e absorção":"CARACTERIZAÇÃO DE MATERIAIS","Adesividade (Tradicional)":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Adesividade (ABS)":"CARACTERIZAÇÃO DE MATERIAIS","Granulometria":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Indice de forma":"CARACTERIZAÇÃO DE MATERIAIS","Sanidade":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Secagem / Estufa":"CARACTERIZAÇÃO DE MATERIAIS","Serragem de CPs":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Balança":"CARACTERIZAÇÃO DE MATERIAIS","Prensa Marshall":"ENSAIOS MECÂNICOS",
+            "Prensa UTM-25":"ENSAIOS MECÂNICOS","Prensa UTM-30":"ENSAIOS MECÂNICOS",
+            "Prensa MTS":"ENSAIOS MECÂNICOS","Prensa RiO":"ENSAIOS MECÂNICOS"
+        };
+
+        function dashGetCat(chave) {
+            if (chave.includes('-[AULA]-')) return 'USO DO LABORATÓRIO PARA AULAS';
+            for (const [k,v] of Object.entries(dashCatMap)) {
+                if (chave.includes('-' + k + '-') || chave.endsWith('-' + k)) return v;
+            }
+            // Fallback: tenta extrair ensaio e buscar no mapa
+            const ensaio = dashGetEnsaio(chave);
+            return dashCatMap[ensaio] || 'Outro';
+        }
+        function dashGetEnsaio(chave) {
+            // Tenta fazer match com os nomes conhecidos primeiro (mais confiável)
+            for (const k of Object.keys(dashCatMap)) {
+                if (chave.includes('-' + k + '-') || chave.endsWith('-' + k)) return k;
+            }
+            // Aulas: extrai nome entre terceiro hífen e o penúltimo segmento
+            if (chave.includes('-[AULA]-')) {
+                const m = chave.match(/^\d{4}-\d{2}-\d{2}-(.+)-\d{2}:\d{2}$/);
+                return m ? m[1] : '[AULA]';
+            }
+            // Fallback genérico
+            const p = chave.split('-');
+            return p.slice(3, p.length - 1).join('-');
+        }
+        function dashGetData(chave) { const p=chave.split('-'); return p[0]+'-'+p[1]+'-'+p[2]; }
+        function dashGetHora(chave) { const p=chave.split('-'); return p[p.length-1]; }
+        function dashGetSemana(data) {
+            const d = new Date(data+'T00:00:00');
+            d.setDate(d.getDate() - d.getDay());
+            return d.toISOString().split('T')[0];
+        }
+
+        // ── FILTROS ──
+        function dashFiltrarPorPeriodo() {
+            const per = document.getElementById('dash-filtro-periodo').value;
+            const hoje = new Date();
+            if (per !== '0') {
+                const de = new Date(hoje); de.setDate(de.getDate() - parseInt(per));
+                document.getElementById('dash-filtro-de').value = de.toISOString().split('T')[0];
+                document.getElementById('dash-filtro-ate').value = hoje.toISOString().split('T')[0];
+            } else {
+                document.getElementById('dash-filtro-de').value = '';
+                document.getElementById('dash-filtro-ate').value = '';
+            }
+            aplicarFiltrosDash();
+        }
+
+        function aplicarFiltrosDash() {
+            const cat = document.getElementById('dash-filtro-cat').value;
+            const de  = document.getElementById('dash-filtro-de').value;
+            const ate = document.getElementById('dash-filtro-ate').value;
+            dadosFiltradosDash = {};
+            for (const [chave, valor] of Object.entries(dadosBrutosDash)) {
+                const data = dashGetData(chave);
+                const c    = dashGetCat(chave);
+                if (cat && c !== cat) continue;
+                if (de  && data < de)  continue;
+                if (ate && data > ate) continue;
+                dadosFiltradosDash[chave] = valor;
+            }
+            dashRenderizarTudo();
+        }
+
+        // ── PROCESSAR ──
+        function dashProcessar(dados) {
+            const porEnsaio={}, porCat={}, porHora={}, porSemana={}, usuarios=new Set();
+            for (const [chave, usuario] of Object.entries(dados)) {
+                const ensaio = dashGetEnsaio(chave);
+                const cat    = dashGetCat(chave);
+                const hora   = dashGetHora(chave);
+                const data   = dashGetData(chave);
+                if (!porEnsaio[ensaio]) porEnsaio[ensaio] = {count:0, categoria:cat};
+                porEnsaio[ensaio].count++;
+                porCat[cat] = (porCat[cat]||0) + 1;
+                porHora[hora] = (porHora[hora]||0) + 1;
+                const sem = dashGetSemana(data);
+                porSemana[sem] = (porSemana[sem]||0) + 1;
+                if (typeof usuario === 'string') usuarios.add(usuario.trim().toLowerCase());
+            }
+            return {porEnsaio, porCat, porHora, porSemana, usuarios};
+        }
+
+        function dashRenderizarTudo() {
+            const p = dashProcessar(dadosFiltradosDash);
+            // KPIs
+            const total = Object.keys(dadosFiltradosDash).length;
+            document.getElementById('dash-kpi-total').textContent = total.toLocaleString('pt-BR');
+            const topE = Object.entries(p.porEnsaio).sort((a,b)=>b[1].count-a[1].count)[0];
+            if (topE) { document.getElementById('dash-kpi-top').textContent = topE[0].replace('[AULA]','Aulas'); document.getElementById('dash-kpi-top-sub').textContent = topE[1].count+' reservas'; }
+            document.getElementById('dash-kpi-usuarios').textContent = p.usuarios.size || '—';
+            const topH = Object.entries(p.porHora).sort((a,b)=>b[1]-a[1])[0];
+            if (topH) { document.getElementById('dash-kpi-pico').textContent = topH[0]; document.getElementById('dash-kpi-pico-sub').textContent = topH[1]+' reservas'; }
+            // Charts
+            dashChartProc(p.porEnsaio);
+            dashChartCat(p.porCat);
+            dashChartTime(p.porSemana);
+            dashChartHora(p.porHora);
+            dashTabela(p.porEnsaio);
+        }
+
+        function dashDestroy(id) { if(chartsDash[id]){chartsDash[id].destroy();delete chartsDash[id];} }
+
+        function dashChartProc(porEnsaio) {
+            const sorted = Object.entries(porEnsaio).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
+            dashDestroy('proc');
+            const ctx = document.getElementById('dash-chart-proc').getContext('2d');
+            chartsDash['proc'] = new Chart(ctx, {
+                type:'bar',
+                data:{ labels: sorted.map(([n])=>n.replace('[AULA]','Aulas')),
+                       datasets:[{label:'Reservas', data:sorted.map(([,v])=>v.count),
+                       backgroundColor: sorted.map(([,v])=>v.categoria==='ENSAIOS MECÂNICOS'?'#e74c3c':v.categoria==='USO DO LABORATÓRIO PARA AULAS'?'#27ae60':'#1A4A5A'),
+                       borderRadius:5, borderSkipped:false}]},
+                options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}}}, y:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}}}}}
+            });
+        }
+
+        function dashChartCat(porCat) {
+            const labels = Object.keys(porCat).map(c=>c==='CARACTERIZAÇÃO DE MATERIAIS'?'Caracterização':c==='ENSAIOS MECÂNICOS'?'Ensaios Mecânicos':'Aulas');
+            dashDestroy('cat');
+            const ctx = document.getElementById('dash-chart-cat').getContext('2d');
+            chartsDash['cat'] = new Chart(ctx, {
+                type:'doughnut',
+                data:{ labels, datasets:[{data:Object.values(porCat), backgroundColor:['#1A4A5A','#D35400','#27ae60'], borderWidth:3, borderColor:'#fff', hoverOffset:6}]},
+                options:{responsive:true, maintainAspectRatio:false, cutout:'65%',
+                    plugins:{legend:{position:'bottom', labels:{font:{family:'Inter',size:11}, padding:12, usePointStyle:true}},
+                    tooltip:{callbacks:{label:c=>` ${c.raw} reservas (${Math.round(c.raw/c.dataset.data.reduce((a,b)=>a+b,0)*100)}%)`}}}}
+            });
+        }
+
+        function dashChartTime(porSemana) {
+            const semanas = Object.keys(porSemana).sort();
+            dashDestroy('time');
+            const ctx = document.getElementById('dash-chart-time').getContext('2d');
+            chartsDash['time'] = new Chart(ctx, {
+                type:'line',
+                data:{ labels: semanas.map(s=>{ const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}); }),
+                       datasets:[{label:'Reservas', data:semanas.map(s=>porSemana[s]), borderColor:'#1A4A5A', backgroundColor:'rgba(26,74,90,0.08)', fill:true, tension:0.4, pointBackgroundColor:'#1A4A5A', pointRadius:4, borderWidth:2}]},
+                options:{responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}, maxTicksLimit:8}}, y:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}, stepSize:1}}}}
+            });
+        }
+
+        function dashChartHora(porHora) {
+            const horas=[]; const vals=[];
+            for(let h=7;h<=17;h++){const k=h.toString().padStart(2,'0')+':00';horas.push(k);vals.push(porHora[k]||0);}
+            const mx=Math.max(...vals);
+            dashDestroy('hora');
+            const ctx = document.getElementById('dash-chart-hora').getContext('2d');
+            chartsDash['hora'] = new Chart(ctx, {
+                type:'bar',
+                data:{ labels:horas, datasets:[{label:'Reservas', data:vals, backgroundColor:vals.map(v=>v===mx?'#D35400':'rgba(26,74,90,0.7)'), borderRadius:5, borderSkipped:false}]},
+                options:{responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}}}, y:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}, stepSize:1}}}}
+            });
+        }
+
+        function dashTabela(porEnsaio) {
+            const sorted = Object.entries(porEnsaio).sort((a,b)=>b[1].count-a[1].count);
+            const total = sorted.reduce((s,[,v])=>s+v.count,0)||1;
+            const maxC  = sorted[0]?.[1].count||1;
+            document.getElementById('dash-table-count').textContent = sorted.length+' procedimentos';
+            if(!sorted.length){document.getElementById('dash-tabela-corpo').innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:#aaa;">Nenhum dado para este filtro.</td></tr>';return;}
+            let html='';
+            sorted.forEach(([nome,info],i)=>{
+                const rank=i+1;
+                const badgeStyle = rank===1?'background:#fff3cd;color:#856404':rank===2?'background:#e9ecef;color:#495057':rank===3?'background:#fdecea;color:#842029':'background:#f0f4f6;color:#6b8a96';
+                const pct=Math.round((info.count/total)*100);
+                const barPct=Math.round((info.count/maxC)*100);
+                const tag = info.categoria==='ENSAIOS MECÂNICOS'?'<span style="background:#fce4ec;color:#880e4f;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Mecânicos</span>':info.categoria==='USO DO LABORATÓRIO PARA AULAS'?'<span style="background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Aulas</span>':'<span style="background:#e3f2fd;color:#1565c0;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Caracterização</span>';
+                html+=`<tr style="border-bottom:1px solid #eef2f4;">
+                    <td style="padding:12px 16px;"><span style="${badgeStyle};display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:0.73rem;font-weight:700;">${rank}</span></td>
+                    <td style="padding:12px 16px;font-weight:600;font-size:0.85rem;">${nome.replace('[AULA]','Aulas')}</td>
+                    <td style="padding:12px 16px;">${tag}</td>
+                    <td style="padding:12px 16px;font-weight:700;font-size:0.85rem;">${info.count}</td>
+                    <td style="padding:12px 16px;min-width:140px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="flex:1;height:6px;background:#e8eef1;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barPct}%;background:linear-gradient(90deg,#1A4A5A,#2a6f84);border-radius:3px;"></div></div>
+                            <span style="font-size:0.73rem;color:#6b8a96;min-width:30px;">${pct}%</span>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('dash-tabela-corpo').innerHTML=html;
+        }
+    </script>
+</body>
+</html>
