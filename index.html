@@ -865,6 +865,11 @@
                 return; 
             }
 
+            if (!senha) {
+                alert("Por favor, digite a senha do laboratório.");
+                return;
+            }
+
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                 const ensaiosAula = document.querySelectorAll('.check-ensaio-aula:checked');
                 if (ensaiosAula.length === 0) {
@@ -887,21 +892,29 @@
             const BASE_URL = "https://script.google.com/macros/s/AKfycbyIIRfTvzVf4v9TriiD09hKMJJLsn1I54Z7aIdcPxrmwORi0v_aLw3t1cJAgmR9WMxoRw/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
+            // CORREÇÃO: chave usa sempre o nome limpo do ensaio (sem texto formatado)
+            const chaveEnsaio = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
+                ? `${dataUso}-[AULA]`
+                : `${dataUso}-${ensaioSelecionado}`;
+
             const reservas = [{
-                chave: categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
-                    ? `${dataUso}-[AULA]`
-                    : `${dataUso}-${ensaioSelecionado}`,
+                chave: chaveEnsaio,
                 maquina: detalhes,
                 horas: horas
             }];
 
+            // CORREÇÃO CRÍTICA: Ensaios Mecânicos → aba 'Prensas'; outros → 'Reservas'
             const abaDestino = categoriaAtiva === 'ENSAIOS MECÂNICOS' ? 'Prensas' : 'Reservas';
+
+            console.log(`[DEBUG] Categoria: ${categoriaAtiva} | Aba destino: ${abaDestino}`);
+            console.log(`[DEBUG] Chave: ${chaveEnsaio} | Horas:`, horas);
 
             const payload = {
                 action: 'reservar_lote',
                 id: ID_UNICO,
                 senha: senha,
                 aba: abaDestino,
+                categoria: categoriaAtiva,
                 usuario: { nome, email, orientador, projeto },
                 reservas: reservas,
                 data: dataUso
